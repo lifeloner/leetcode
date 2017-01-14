@@ -603,28 +603,28 @@ public class Easy {
             return 0;
         }
         int[][][] count = new int[m + 1][n + 1][2];
-        int k,t;
+        int k, t;
         for (int i = 0; i <= m; i++) {
-                count[i][0][0] = 0;
+            count[i][0][0] = 0;
         }
-        for(int i=0;i<=n;i++){
-            count[0][i][0]=0;
+        for (int i = 0; i <= n; i++) {
+            count[0][i][0] = 0;
         }
-        for(int i=0;i<strs.length;i++){
-            for(int j=0;j<=m;j++){
-                for(k=0;k<=n;k++){
-                    t=count(strs[i]);
-                    if(j>=t&&k>=strs[i].length()-t&&1+count[j-t][k-strs[i].length()+t][0]>count[j][k][0]){
-                        count[j][k][1]=1+count[j-t][k-strs[i].length()+t][0];
-                    }else {
-                        count[j][k][1]=count[j][k][0];
+        for (int i = 0; i < strs.length; i++) {
+            for (int j = 0; j <= m; j++) {
+                for (k = 0; k <= n; k++) {
+                    t = count(strs[i]);
+                    if (j >= t && k >= strs[i].length() - t && 1 + count[j - t][k - strs[i].length() + t][0] > count[j][k][0]) {
+                        count[j][k][1] = 1 + count[j - t][k - strs[i].length() + t][0];
+                    } else {
+                        count[j][k][1] = count[j][k][0];
                     }
                 }
             }
-            for(int j=0;j<=m;j++){
-                for(k=0;k<=n;k++){
-                 count[j][k][0]=count[j][k][1];
-                    System.out.println(j+" "+k+" "+count[j][k][0]);
+            for (int j = 0; j <= m; j++) {
+                for (k = 0; k <= n; k++) {
+                    count[j][k][0] = count[j][k][1];
+                    System.out.println(j + " " + k + " " + count[j][k][0]);
                 }
             }
         }
@@ -639,6 +639,180 @@ public class Easy {
             }
         }
         return count;
+    }
+
+    public String licenseKeyFormatting(String S, int K) {
+        StringBuilder stringBuilder = new StringBuilder();
+        char c;
+        for (int i = 0; i < S.length(); i++) {
+            c = S.charAt(i);
+            if (c - 'a' >= 0 && c - 'z' <= 0) {
+                stringBuilder.append((char) (c - 32));
+            } else if (c - 'A' >= 0 && c - 'Z' <= 0) {
+                stringBuilder.append(c);
+            } else if (c - '0' >= 0 && c - '9' <= 0) {
+                stringBuilder.append(c);
+            }
+        }
+        StringBuilder builder = new StringBuilder();
+        int k = stringBuilder.length() % K, len = stringBuilder.length();
+        for (int i = 0; i < k; i++) {
+            builder.append(stringBuilder.charAt(i));
+        }
+        if (k != 0 && k < len) {
+            builder.append('-');
+        }
+        for (int i = k; i < len; i++) {
+            builder.append(stringBuilder.charAt(i));
+            if (i + 1 != len && (i - k + 1) % K == 0) {
+                builder.append('-');
+            }
+        }
+        return builder.toString();
+    }
+
+    public int magicalString(int n) {
+        if (n < 0) {
+            return 0;
+        }
+        int[] num = new int[n + 5];
+        num[0] = 2;
+        num[1] = 1;
+        int k = 1, index = 1;
+        while (index <= n) {
+            if (num[k] == 1) {
+                if (num[index - 1] == 1) {
+                    num[index++] = 2;
+                } else {
+                    num[index++] = 1;
+                }
+            } else {
+                if (num[index - 1] == 1) {
+                    num[index++] = 2;
+                    num[index++] = 2;
+                } else {
+                    num[index++] = 1;
+                    num[index++] = 1;
+                }
+            }
+            k++;
+        }
+        k = 0;
+        for (int i = 1; i <= n; i++) {
+            if (num[i] == 1) {
+                k++;
+            }
+            System.out.println(i + " " + k);
+        }
+        return k;
+    }
+
+    public int findComplement(int num) {
+        if (num == 0) {
+            return 0;
+        }
+        int step = 1, result = 0, k;
+        while (num != 0) {
+            k = num % 2;
+            num = num >> 1;
+            if (k == 0) {
+                result += step;
+            }
+            step *= 2;
+        }
+        return result;
+    }
+
+    public boolean makesquare(int[] nums) {
+        if (nums.length < 4) {
+            return false;
+        }
+        int sum = 0, edge, k,num;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            if (map.containsKey(nums[i])) {
+                map.put(nums[i], map.get(nums[i]) + 1);
+            } else {
+                map.put(nums[i], 1);
+            }
+        }
+        if (sum % 4 != 0) {
+            return false;
+        }
+        edge = sum / 4;
+        List<Integer> list = new ArrayList<>();
+        list.addAll(map.keySet());
+        Collections.sort(list, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1;
+            }
+        });
+        k = 0;
+        while (k < list.size()) {
+            num=list.get(k);
+            if (num > edge) {
+                return false;
+            } else if (!map.containsKey(num)) {
+                k++;
+            } else if (num == edge) {
+                sum = map.get(edge);
+                if (sum == 1) {
+                    map.remove(edge);
+                    k++;
+                } else {
+                    map.put(edge, sum - 1);
+                }
+            } else {
+                sum = map.get(num);
+                if (sum == 1) {
+                    map.remove(num);
+                    k++;
+                } else {
+                    map.put(num, sum - 1);
+                }
+                if(!dfs(map, list, k , edge -num)){
+                    System.out.println(k+"b");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean dfs(Map<Integer, Integer> map, List<Integer> list, int pos, int num) {
+        int k;
+        for (int i = pos; i < list.size(); i++) {
+            k=list.get(i);
+            if (k > num || !map.containsKey(k)) {
+                continue;
+            } else if (k == num) {
+                int temp = map.get(k);
+                if (temp == 1) {
+                    map.remove(k);
+                } else {
+                    map.put(num, temp - 1);
+                }
+                return true;
+            } else {
+                int temp = map.get(k);
+                if (temp == 1) {
+                    map.remove(k);
+                } else {
+                    map.put(k, temp - 1);
+                }
+                if (dfs(map, list, i, num - k)) {
+                    return true;
+                }
+                if (temp == 1) {
+                    map.put(k, 1);
+                } else {
+                    map.put(k, temp);
+                }
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
@@ -675,6 +849,11 @@ public class Easy {
 //        System.out.println(easy.find132pattern(new int[]{-2,1,2,-2,1,2}));
 //        System.out.println(easy.fourSumCount(new int[]{1, 2}, new int[]{-2, -1}, new int[]{-1, 2}, new int[]{0, 2}));
 //        System.out.println(easy.findRadius(new int[]{1, 2, 3}, new int[]{1, 2, 3}));
-        System.out.println(easy.findMaxForm(new String[]{"10", "0001", "111001", "1", "0"},5,3));
+//        System.out.println(easy.findMaxForm(new String[]{"10", "0001", "111001", "1", "0"},5,3));
+//        System.out.println(easy.licenseKeyFormatting("a",2));
+//        System.out.println(easy.magicalString(2));
+//        System.out.println(easy.findComplement(5));
+        System.out.println(easy.makesquare(new int[]{2,2,2,1,1}));
     }
+
 }
