@@ -727,7 +727,7 @@ public class Easy {
         if (nums.length < 4) {
             return false;
         }
-        int sum = 0, edge, k,num;
+        int sum = 0, edge, k, num;
         Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
             sum += nums[i];
@@ -751,7 +751,7 @@ public class Easy {
         });
         k = 0;
         while (k < list.size()) {
-            num=list.get(k);
+            num = list.get(k);
             if (num > edge) {
                 return false;
             } else if (!map.containsKey(num)) {
@@ -772,8 +772,8 @@ public class Easy {
                 } else {
                     map.put(num, sum - 1);
                 }
-                if(!dfs(map, list, k , edge -num)){
-                    System.out.println(k+"b");
+                if (!dfs(map, list, k, edge - num)) {
+                    System.out.println(k + "b");
                     return false;
                 }
             }
@@ -784,7 +784,7 @@ public class Easy {
     public boolean dfs(Map<Integer, Integer> map, List<Integer> list, int pos, int num) {
         int k;
         for (int i = pos; i < list.size(); i++) {
-            k=list.get(i);
+            k = list.get(i);
             if (k > num || !map.containsKey(k)) {
                 continue;
             } else if (k == num) {
@@ -815,17 +815,107 @@ public class Easy {
         return false;
     }
 
+    public int findMaxConsecutiveOnes(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int count = 0, max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == 1) {
+                max++;
+            } else {
+                max = 0;
+            }
+            if (max > count) {
+                count = max;
+            }
+        }
+        return count;
+    }
+
+    public int[] findMode(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        List<Integer> list = new ArrayList<>();
+        int[] array = new int[2];
+        array[0] = 0;
+        array[1] = 0;
+        list.add(0);
+        list.add(0);
+        preVisited(root, array, list);
+        int k = list.size();
+        if (list.get(k - 1) < array[1]) {
+            return new int[]{array[0]};
+        } else if (list.get(k - 1) == array[1]) {
+            list.add(array[0]);
+            list.add(array[1]);
+        }
+        int[] result = new int[list.size() / 2];
+        for (int i = 0; i < list.size(); i += 2) {
+            result[i / 2] = list.get(i);
+        }
+        return result;
+    }
+
+    public void preVisited(TreeNode root, int[] array, List<Integer> list) {
+        if (root == null) {
+            return;
+        }
+        preVisited(root.left, array, list);
+        if (root.val == array[0]) {
+            array[1]++;
+        } else {
+            int k = list.get(list.size() - 1);
+            if (k < array[1]) {
+                list.clear();
+                list.add(array[0]);
+                list.add(array[1]);
+            } else if (k == array[1]) {
+                list.add(array[0]);
+                list.add(array[1]);
+            }
+            array[0] = root.val;
+            array[1] = 1;
+        }
+        preVisited(root.right, array, list);
+    }
+
+    public int[] constructRectangle(int area) {
+        int []array=new int[2];
+        array[0]=0;
+        array[1]=0;
+        if(area==0){
+            return array;
+        }
+        for(int i=1;i*i<=area;i++) {
+            if(area%i==0){
+                array[0]=area/i;
+                array[1]=i;
+            }
+        }
+        return array;
+    }
+
     public static void main(String[] args) {
         Easy easy = new Easy();
-//        System.out.println(easy.findNthDigit(189));
+//        System.out.println(easy.fi
+        //  System.out.println(easy.addStrings("899","16"));ndNthDigit(189));
 //        System.out.println(easy.toHex(0));
 //        System.out.println(easy.longestPalindrome("ccccAAdd"));
-        //  System.out.println(easy.addStrings("899","16"));
-//        TreeNode a=new TreeNode(10);
-//        TreeNode b=new TreeNode(5);
-//        TreeNode c=new TreeNode(-3);
-//        a.left=b;
-//        a.right=c;
+        TreeNode a = new TreeNode(10);
+        TreeNode b = new TreeNode(5);
+        TreeNode c = new TreeNode(13);
+        TreeNode d = new TreeNode(13);
+        TreeNode e = new TreeNode(5);
+        TreeNode f = new TreeNode(5);
+        TreeNode g = new TreeNode(13);
+        a.left = b;
+        b.left=e;
+        b.right=f;
+        a.right = c;
+        c.left=d;
+        c.right=g;
 //        TreeNode d=new TreeNode(3);
 //        TreeNode e=new TreeNode(2);
 //        b.left=d;
@@ -853,7 +943,10 @@ public class Easy {
 //        System.out.println(easy.licenseKeyFormatting("a",2));
 //        System.out.println(easy.magicalString(2));
 //        System.out.println(easy.findComplement(5));
-        System.out.println(easy.makesquare(new int[]{2,2,2,1,1}));
+//        System.out.println(easy.makesquare(new int[]{2,2,2,1,1}));
+//        System.out.println(easy.findMaxConsecutiveOnes(new int[]{1, 1, 1, 1, 0, 1, 1, 1}));
+//        System.out.println(Arrays.toString(easy.findMode(a)));
+        System.out.println(Arrays.toString(easy.constructRectangle(10000000)));
     }
 
 }
