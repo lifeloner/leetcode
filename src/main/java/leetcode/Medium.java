@@ -1,5 +1,8 @@
-package  leetcode;
+package leetcode;
 
+import org.omg.PortableInterceptor.INACTIVE;
+
+import java.time.temporal.Temporal;
 import java.util.*;
 
 /**
@@ -118,7 +121,7 @@ public class Medium {
         return Math.max(pos[pos.length - 1], neg[neg.length - 1]);
     }
 
-   // public List<int[]> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+    // public List<int[]> kSmallestPairs(int[] nums1, int[] nums2, int k) {
 //        List<int[]> result = new ArrayList<>();
 //        if (k == 0 || nums1.length == 0 || nums2.length == 0 || nums1 == null || nums2 == null) {
 //            return result;
@@ -160,9 +163,9 @@ public class Medium {
 //            }
 //        }
 //        return result;
-   // }
+    // }
 
-   // public List<String> findItinerary(String[][] tickets) {
+    // public List<String> findItinerary(String[][] tickets) {
 //        List<String> result = new ArrayList<>();
 //        if (tickets == null || tickets.length == 0) {
 //            return result;
@@ -204,7 +207,7 @@ public class Medium {
 //        t = index.get("JFK");
 //        dfs(result, array, index, visited, t, tickets.length + 1);
 //        return result;
-   // }
+    // }
 
     public boolean dfs(List<String> result, List<String>[] array, Map<String, Integer> map, boolean[][] visited, int k, int n) {
         if (n == result.size()) {
@@ -1110,7 +1113,7 @@ public class Medium {
                     temp = new TreeNode(num, 0);
                     node.left = temp;
                     stack.add(temp);
-                    System.out.println("left "+num);
+                    System.out.println("left " + num);
                 } else {
                     node = stack.pop();
                     temp = node;
@@ -1119,13 +1122,13 @@ public class Medium {
                         node = stack.pop();
                     }
                     if (num > node.value) {
-                        System.out.println("big "+node.value);
+                        System.out.println("big " + node.value);
                         temp = new TreeNode(num, 0);
                         node.right = temp;
                         stack.add(temp);
                     } else {
                         stack.add(node);
-                        System.out.println("less "+temp.value);
+                        System.out.println("less " + temp.value);
                         node = new TreeNode(num, 0);
                         temp.right = node;
                         stack.add(node);
@@ -1137,30 +1140,132 @@ public class Medium {
     }
 
     public int totalHammingDistance(int[] nums) {
-        int result=0,a,b,num=0;
-        while(true) {
-            a=0;
-            b=0;
+        int result = 0, a, b, num = 0;
+        while (true) {
+            a = 0;
+            b = 0;
             for (int i = 0; i < nums.length; i++) {
-                if(nums[i]%2==0){
+                if (nums[i] % 2 == 0) {
                     a++;
-                }else{
+                } else {
                     b++;
                 }
-                nums[i]=nums[i]>>1;
-                if(nums[i]>num){
-                    num=nums[i];
+                nums[i] = nums[i] >> 1;
+                if (nums[i] > num) {
+                    num = nums[i];
                 }
             }
-            result+=a*b;
-            if(num==0){
+            result += a * b;
+            if (num == 0) {
                 break;
             }
-            num=0;
+            num = 0;
         }
         return result;
     }
 
+    public int findPoisonedDuration(int[] timeSeries, int duration) {
+        if (timeSeries == null || timeSeries.length == 0) {
+            return 0;
+        }
+        int result = 0;
+        for (int i = 1; i < timeSeries.length; i++) {
+            if (timeSeries[i] - timeSeries[i - 1] >= duration) {
+                result += duration;
+            } else {
+                result += timeSeries[i] - timeSeries[i - 1];
+            }
+        }
+        return result + duration;
+    }
+
+    public int findTargetSumWays(int[] nums, int S) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+        }
+        if (S > sum) {
+            return 0;
+        }
+        int[][] array = new int[nums.length][2 * sum + 1];
+        for (int i = 0; i < 2 * sum + 1; i++) {
+            array[0][i] = 0;
+        }
+        if (nums[0] == 0) {
+            array[0][sum] = 2;
+        } else {
+            array[0][nums[0] + sum] = 1;
+            array[0][sum - nums[0]] = 1;
+        }
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; j < 2 * sum + 1; j++) {
+                array[i][j] = 0;
+                if (j + nums[i] < 2 * sum + 1) {
+                    array[i][j] += array[i - 1][j + nums[i]];
+                }
+                if (j >= nums[i]) {
+                    array[i][j] += array[i - 1][j - nums[i]];
+                }
+            }
+        }
+        return array[nums.length - 1][S + sum];
+    }
+
+    public List<List<Integer>> findSubsequences(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (nums == null || nums.length == 0) {
+            return result;
+        }
+        Set<Integer> set = new HashSet<>();
+        Set<Integer> sets;
+        List<Integer> num=new ArrayList<>(), temp, temps,numss=new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (set.contains(nums[i])) {
+                continue;
+            }
+            set.add(nums[i]);
+            sets = new HashSet<>();
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[j] < nums[i] || sets.contains(nums[j])) {
+                    continue;
+                }
+                temp = new ArrayList<>();
+                temp.add(nums[i]);
+                temp.add(nums[j]);
+                result.add(temp);
+                num.add(result.size()-1);
+                num.add(j);
+                sets.add(nums[j]);
+            }
+        }
+        int index, k;
+        while (num.size() > 0) {
+            for (int i = 0; i < num.size(); i+=2) {
+                temp = result.get(num.get(i));
+                index =num.get(i+1);
+                k = temp.get(temp.size() - 1);
+                set = new HashSet<>();
+                for(int j=index+1;j<nums.length;j++) {
+                    if (nums[j] < k || set.contains(nums[j])) {
+                        continue;
+                    }
+                    set.add(nums[j]);
+                    temps = new ArrayList<>();
+                    temps.addAll(temp);
+                    temps.add(nums[j]);
+                    result.add(temps);
+                    numss.add(result.size()-1);
+                    numss.add(j);
+                }
+            }
+            num = numss;
+            numss = new ArrayList<>();
+        }
+        return result;
+    }
 
     public static void main(String[] args) {
         Medium medium = new Medium();
@@ -1240,7 +1345,10 @@ public class Medium {
 //                queue.add(root.right);
 //            }
 //        }
-        System.out.println(medium.totalHammingDistance(new int[]{4,14,2}));
+//        System.out.println(medium.totalHammingDistance(new int[]{4,14,2}));
+//        System.out.println(medium.findPoisonedDuration(new int[]{1,2},2));
+//        System.out.println(medium.findTargetSumWays(new int[]{0,0,0,0,0,0,0,0,1},1));
+        System.out.println(medium.findSubsequences(new int[]{4,6,7,7}));
     }
 
     class Node {
