@@ -1221,7 +1221,7 @@ public class Medium {
         }
         Set<Integer> set = new HashSet<>();
         Set<Integer> sets;
-        List<Integer> num=new ArrayList<>(), temp, temps,numss=new ArrayList<>();
+        List<Integer> num = new ArrayList<>(), temp, temps, numss = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
             if (set.contains(nums[i])) {
                 continue;
@@ -1236,19 +1236,19 @@ public class Medium {
                 temp.add(nums[i]);
                 temp.add(nums[j]);
                 result.add(temp);
-                num.add(result.size()-1);
+                num.add(result.size() - 1);
                 num.add(j);
                 sets.add(nums[j]);
             }
         }
         int index, k;
         while (num.size() > 0) {
-            for (int i = 0; i < num.size(); i+=2) {
+            for (int i = 0; i < num.size(); i += 2) {
                 temp = result.get(num.get(i));
-                index =num.get(i+1);
+                index = num.get(i + 1);
                 k = temp.get(temp.size() - 1);
                 set = new HashSet<>();
-                for(int j=index+1;j<nums.length;j++) {
+                for (int j = index + 1; j < nums.length; j++) {
                     if (nums[j] < k || set.contains(nums[j])) {
                         continue;
                     }
@@ -1257,12 +1257,58 @@ public class Medium {
                     temps.addAll(temp);
                     temps.add(nums[j]);
                     result.add(temps);
-                    numss.add(result.size()-1);
+                    numss.add(result.size() - 1);
                     numss.add(j);
                 }
             }
             num = numss;
             numss = new ArrayList<>();
+        }
+        return result;
+    }
+
+    public int[] nextGreaterElements(int[] nums) {
+        if (nums == null) {
+            return null;
+        }
+        int[] result = new int[nums.length];
+        Map<Integer, Integer> index = new HashMap<>();
+        Stack<Integer> stack = new Stack<>();
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        List<Integer> list;
+        for (int k = 0; k < 2; k++) {
+            for (int i = 0; i < nums.length; i++) {
+                while (!stack.empty() && stack.peek() < nums[i]) {
+                    if (!map.containsKey(stack.peek())) {
+                        list = new ArrayList<>();
+                        list.add(nums[i]);
+                        map.put(stack.pop(), list);
+                    } else {
+                        map.get(stack.pop()).add(nums[i]);
+                    }
+                }
+                if (k == 0) {
+                    stack.push(nums[i]);
+                } else {
+                    if (index.containsKey(nums[i])) {
+                        list = map.getOrDefault(nums[i], null);
+                        if (list != null) {
+                            result[i] = list.get(index.get(nums[i]));
+                            index.put(nums[i], index.get(nums[i]) + 1);
+                        } else {
+                            result[i] = -1;
+                        }
+                    } else {
+                        list = map.getOrDefault(nums[i], null);
+                        if (list != null) {
+                            result[i] = list.get(0);
+                            index.put(nums[i], 1);
+                        } else {
+                            result[i] = -1;
+                        }
+                    }
+                }
+            }
         }
         return result;
     }
@@ -1348,7 +1394,8 @@ public class Medium {
 //        System.out.println(medium.totalHammingDistance(new int[]{4,14,2}));
 //        System.out.println(medium.findPoisonedDuration(new int[]{1,2},2));
 //        System.out.println(medium.findTargetSumWays(new int[]{0,0,0,0,0,0,0,0,1},1));
-        System.out.println(medium.findSubsequences(new int[]{4,6,7,7}));
+//        System.out.println(medium.findSubsequences(new int[]{4,6,7,7}));
+        System.out.println(Arrays.toString(medium.nextGreaterElements(new int[]{100, 100,100})));
     }
 
     class Node {

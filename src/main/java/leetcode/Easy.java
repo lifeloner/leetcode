@@ -1,5 +1,7 @@
 package leetcode;
 
+import org.omg.PortableInterceptor.INACTIVE;
+
 import java.util.*;
 
 /**
@@ -882,19 +884,38 @@ public class Easy {
     }
 
     public int[] constructRectangle(int area) {
-        int []array=new int[2];
-        array[0]=0;
-        array[1]=0;
-        if(area==0){
+        int[] array = new int[2];
+        array[0] = 0;
+        array[1] = 0;
+        if (area == 0) {
             return array;
         }
-        for(int i=1;i*i<=area;i++) {
-            if(area%i==0){
-                array[0]=area/i;
-                array[1]=i;
+        for (int i = 1; i * i <= area; i++) {
+            if (area % i == 0) {
+                array[0] = area / i;
+                array[1] = i;
             }
         }
         return array;
+    }
+
+    public int[] nextGreaterElement(int[] findNums, int[] nums) {
+        if (findNums == null) {
+            return null;
+        }
+        int[] result = new int[findNums.length];
+        Stack<Integer> stack = new Stack<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            while (!stack.empty() && stack.peek() < num) {
+                map.put(stack.pop(), num);
+            }
+            stack.push(num);
+        }
+        for (int i = 0; i < findNums.length; i++) {
+            result[i] = map.getOrDefault(findNums[i], -1);
+        }
+        return result;
     }
 
     public static void main(String[] args) {
@@ -903,19 +924,19 @@ public class Easy {
         //  System.out.println(easy.addStrings("899","16"));ndNthDigit(189));
 //        System.out.println(easy.toHex(0));
 //        System.out.println(easy.longestPalindrome("ccccAAdd"));
-        TreeNode a = new TreeNode(10);
-        TreeNode b = new TreeNode(5);
-        TreeNode c = new TreeNode(13);
-        TreeNode d = new TreeNode(13);
-        TreeNode e = new TreeNode(5);
-        TreeNode f = new TreeNode(5);
-        TreeNode g = new TreeNode(13);
-        a.left = b;
-        b.left=e;
-        b.right=f;
-        a.right = c;
-        c.left=d;
-        c.right=g;
+//        TreeNode a = new TreeNode(10);
+//        TreeNode b = new TreeNode(5);
+//        TreeNode c = new TreeNode(13);
+//        TreeNode d = new TreeNode(13);
+//        TreeNode e = new TreeNode(5);
+//        TreeNode f = new TreeNode(5);
+//        TreeNode g = new TreeNode(13);
+//        a.left = b;
+//        b.left=e;
+//        b.right=f;
+//        a.right = c;
+//        c.left=d;
+//        c.right=g;
 //        TreeNode d=new TreeNode(3);
 //        TreeNode e=new TreeNode(2);
 //        b.left=d;
@@ -946,7 +967,8 @@ public class Easy {
 //        System.out.println(easy.makesquare(new int[]{2,2,2,1,1}));
 //        System.out.println(easy.findMaxConsecutiveOnes(new int[]{1, 1, 1, 1, 0, 1, 1, 1}));
 //        System.out.println(Arrays.toString(easy.findMode(a)));
-        System.out.println(Arrays.toString(easy.constructRectangle(10000000)));
+//        System.out.println(Arrays.toString(easy.constructRectangle(10000000)));
+        System.out.println(Arrays.toString(easy.nextGreaterElement(new int[]{4, 1, 2}, new int[]{1, 2, 3, 4})));
     }
 
 }
