@@ -1313,6 +1313,143 @@ public class Medium {
         return result;
     }
 
+    public int[] findDiagonalOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0) {
+            return null;
+        }
+        int m = matrix.length, n = matrix[0].length, index = 0, a = 0, b = 0, c = -1, d = 1;
+        int[] result = new int[m * n];
+        while (index < m * n) {
+            result[index++] = matrix[a][b];
+            if (b + d >= n) {
+                a++;
+                c = 1;
+                d = -1;
+            } else if (a + c < 0) {
+                b++;
+                c = 1;
+                d = -1;
+            } else if (a + c >= m) {
+                b++;
+                c = -1;
+                d = 1;
+            } else if (b + d < 0) {
+                a++;
+                c = -1;
+                d = 1;
+            } else {
+                a += c;
+                b += d;
+            }
+        }
+        return result;
+    }
+
+    public int findBottomLeftValue(TreeNode root) {
+        int[] num = postVisited(root, true);
+        return num[1];
+    }
+
+    public int[] postVisited(TreeNode root, boolean isLeft) {
+        if (root == null) {
+            return new int[]{0, 0};
+        }
+        int[] left = postVisited(root.left, true);
+        int[] right = postVisited(root.right, false);
+        if (left[0] < right[0]) {
+            left[0] = right[0];
+            left[1] = right[1];
+        }
+        if (left[0] == 0) {
+            left[1] = root.value;
+        }
+        left[0]++;
+        return left;
+    }
+
+    public int[] findFrequentTreeSum(TreeNode root) {
+        if (root == null) {
+            return new int[0];
+        }
+        Map<Integer, Integer> count = new HashMap<>();
+        afterVisited(count, root);
+        List<Integer> list = new ArrayList<>();
+        int max = 0;
+        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+            if (entry.getValue() > max) {
+                list.clear();
+                list.add(entry.getKey());
+                max = entry.getValue();
+            } else if (entry.getValue() == max) {
+                list.add(entry.getKey());
+            }
+        }
+        int[] result = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+        return result;
+    }
+
+    public int afterVisited(Map<Integer, Integer> count, TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = afterVisited(count, root.left);
+        int right = afterVisited(count, root.right);
+        count.put(left + right + root.value, count.getOrDefault(left + right + root.value, 0) + 1);
+        return left + right + root.value;
+    }
+
+    public List<Integer> largestValuess(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<TreeNode>queue=new ArrayDeque<>();
+        queue.add(root);
+        int size,max;
+        while(!queue.isEmpty()){
+            size=queue.size();
+            max=Integer.MIN_VALUE;
+            while(size>0){
+                root=queue.poll();
+                if(root.value>max){
+                    max=root.value;
+                }
+                if(root.left!=null){
+                    queue.add(root.left);
+                }
+                if(root.right!=null){
+                    queue.add(root.right);
+                }
+                size--;
+            }
+            result.add(max);
+        }
+        return result;
+    }
+
+    public List<Integer> largestValues(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        preVisited(result, 0, root);
+        return result;
+    }
+
+    public void preVisited(List<Integer> list, int depth, TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        if (list.size() <= depth) {
+            list.add(root.value);
+        }
+        if (list.get(depth) < root.value) {
+            list.set(depth, root.value);
+        }
+        preVisited(list, depth + 1, root.left);
+        preVisited(list, depth + 1, root.right);
+    }
+
     public static void main(String[] args) {
         Medium medium = new Medium();
         //  System.out.println(Arrays.toString(medium.twoSum(new int []{0,0,11,15},0)));
@@ -1351,23 +1488,24 @@ public class Medium {
 //            one=one.next;
 //        }
 //        System.out.println(medium.findDuplicates(new int[]{4,3,2,7,8,2,3,1}));
-//        TreeNode root = new TreeNode(5, 1);
-//        TreeNode a1 = new TreeNode(3, 1);
-//        TreeNode a2 = new TreeNode(2, 1);
-//        TreeNode a3 = new TreeNode(1, 1);
-//        TreeNode a4 = new TreeNode(0, 1);
-//        TreeNode b1 = new TreeNode(4, 1);
-//        TreeNode b2 = new TreeNode(7, 1);
+        TreeNode root = new TreeNode(1, 1);
+        //  TreeNode a1 = new TreeNode(2, 1);
+        // TreeNode a2 = new TreeNode(3, 1);
+        //TreeNode a3 = new TreeNode(4, 1);
+        //  TreeNode a4 = new TreeNode(5, 1);
+        TreeNode b1 = new TreeNode(6, 1);
+        // TreeNode b2 = new TreeNode(7, 1);
 //        TreeNode b3 = new TreeNode(6, 1);
 //        TreeNode b4 = new TreeNode(8, 1);
 //        TreeNode b5 = new TreeNode(10, 1);
-//        a1.left = a2;
-//        a2.left = a3;
-//        a3.left = a4;
-//        a1.right = b1;
+        root.left = null;
+        root.right = b1;
+        //   a1.left = a3;
+//        a2.left = a4;
+        // a2.right = b1;
 //        root.left = a1;
 //        root.right = b2;
-//        b2.left = b3;
+        // a4.left = b2;
 //        b2.right = b4;
 //        b4.right = b5;
 //        System.out.println(medium.deleteNode(root,1).value);
@@ -1395,7 +1533,11 @@ public class Medium {
 //        System.out.println(medium.findPoisonedDuration(new int[]{1,2},2));
 //        System.out.println(medium.findTargetSumWays(new int[]{0,0,0,0,0,0,0,0,1},1));
 //        System.out.println(medium.findSubsequences(new int[]{4,6,7,7}));
-        System.out.println(Arrays.toString(medium.nextGreaterElements(new int[]{100, 100,100})));
+//        System.out.println(Arrays.toString(medium.nextGreaterElements(new int[]{100, 100,100})));
+//        System.out.println(Arrays.toString(medium.findDiagonalOrder(new int[][]{{1,2,3,4},{4,5,6},{7,8,9}})));
+//        System.out.println(Arrays.toString(medium.findFrequentTreeSum(root)));
+//        System.out.println(medium.findBottomLeftValue(root));
+        System.out.println(medium.largestValuess(root));
     }
 
     class Node {

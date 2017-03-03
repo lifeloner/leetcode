@@ -918,6 +918,127 @@ public class Easy {
         return result;
     }
 
+    public String[] findWords(String[] words) {
+        if (words == null) {
+            return null;
+        }
+        List<String> list = new ArrayList<>();
+        Set<Character> one = new HashSet<Character>() {{
+            add('a');
+            add('s');
+            add('d');
+            add('f');
+            add('g');
+            add('h');
+            add('j');
+            add('k');
+            add('l');
+        }};
+        Set<Character> two = new HashSet<Character>() {{
+            add('q');
+            add('w');
+            add('e');
+            add('r');
+            add('t');
+            add('y');
+            add('u');
+            add('i');
+            add('o');
+            add('p');
+        }};
+        Set<Character> three = new HashSet<Character>() {{
+            add('z');
+            add('x');
+            add('c');
+            add('v');
+            add('b');
+            add('n');
+            add('m');
+        }};
+        char c;
+        String temp;
+        for(String str:words){
+            if(str.length()>0){
+                temp=str.toLowerCase();
+                c=temp.charAt(0);
+                if(one.contains(c)&&contains(one,temp)){
+                    list.add(str);
+                }else if(two.contains(c)&&contains(two,temp)){
+                    list.add(str);
+                }else{
+                    if(contains(three,temp)){
+                        list.add(str);
+                    }
+                }
+            }
+        }
+        String[]result=new String[list.size()];
+        return list.toArray(result);
+    }
+
+    public boolean contains(Set<Character>set,String string){
+        char c;
+        for(int i=0;i<string.length();i++){
+            c=string.charAt(i);
+            if(!set.contains(c)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public String convertToBase7(int num) {
+        if(num==0){
+            return "0";
+        }
+        StringBuilder stringBuilder=new StringBuilder();
+        boolean flag=true;
+        if(num<0){
+            num=-num;
+            flag=!flag;
+        }
+        while(num>0){
+            stringBuilder.append(num%7);
+            num=num/7;
+        }
+        if(!flag){
+            stringBuilder.append('-');
+        }
+        return stringBuilder.reverse().toString();
+    }
+
+    public String[] findRelativeRanks(int[] nums) {
+        if(nums==null){
+            return null;
+        }
+        if(nums.length==0){
+            return new String[0];
+        }
+        int [][]array=new int[nums.length][2];
+        for(int i=0;i<nums.length;i++){
+            array[i][0]=nums[i];
+            array[i][1]=i;
+        }
+        Arrays.sort(array, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o2[0]-o1[0];
+            }
+        });
+        String[]result=new String[nums.length];
+        result[array[0][1]]="Gold Medal";
+        if(result.length>1) {
+            result[array[1][1]] = "Silver Medal";
+        }
+        if(result.length>2) {
+            result[array[2][1]] = "Bronze Medal";
+        }
+        for(int i=3;i<array.length;i++){
+            result[array[i][1]]=String.valueOf(i+1);
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         Easy easy = new Easy();
 //        System.out.println(easy.fi
@@ -968,7 +1089,9 @@ public class Easy {
 //        System.out.println(easy.findMaxConsecutiveOnes(new int[]{1, 1, 1, 1, 0, 1, 1, 1}));
 //        System.out.println(Arrays.toString(easy.findMode(a)));
 //        System.out.println(Arrays.toString(easy.constructRectangle(10000000)));
-        System.out.println(Arrays.toString(easy.nextGreaterElement(new int[]{4, 1, 2}, new int[]{1, 2, 3, 4})));
+//        System.out.println(Arrays.toString(easy.nextGreaterElement(new int[]{4, 1, 2}, new int[]{1, 2, 3, 4})));
+//        System.out.println(Arrays.toString(easy.findWords(new String[]{"Hello", "Alaska", "Dad", "Peace"})));
+        System.out.println(Arrays.toString(easy.findRelativeRanks(new int[]{6})));
     }
 
 }
