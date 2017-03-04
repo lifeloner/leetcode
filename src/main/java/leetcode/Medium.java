@@ -1406,21 +1406,21 @@ public class Medium {
         if (root == null) {
             return result;
         }
-        Queue<TreeNode>queue=new ArrayDeque<>();
+        Queue<TreeNode> queue = new ArrayDeque<>();
         queue.add(root);
-        int size,max;
-        while(!queue.isEmpty()){
-            size=queue.size();
-            max=Integer.MIN_VALUE;
-            while(size>0){
-                root=queue.poll();
-                if(root.value>max){
-                    max=root.value;
+        int size, max;
+        while (!queue.isEmpty()) {
+            size = queue.size();
+            max = Integer.MIN_VALUE;
+            while (size > 0) {
+                root = queue.poll();
+                if (root.value > max) {
+                    max = root.value;
                 }
-                if(root.left!=null){
+                if (root.left != null) {
                     queue.add(root.left);
                 }
-                if(root.right!=null){
+                if (root.right != null) {
                     queue.add(root.right);
                 }
                 size--;
@@ -1448,6 +1448,109 @@ public class Medium {
         }
         preVisited(list, depth + 1, root.left);
         preVisited(list, depth + 1, root.right);
+    }
+
+    public int longestPalindromeSubseq(String s) {
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+        if (s.length() == 1) {
+            return 1;
+        }
+        int[][] palindrome = new int[s.length()][s.length()];
+        for (int i = 0; i < palindrome.length; i++) {
+            palindrome[i][i] = 1;
+        }
+        for (int i = 1; i < s.length(); i++) {
+            for (int j = 0; i + j < s.length(); j++) {
+                if (s.charAt(i + j) == s.charAt(j)) {
+                    if (j + 1 <= i + j - 1) {
+                        palindrome[j][i + j] = palindrome[j + 1][i + j - 1] + 2;
+                    } else {
+                        palindrome[j][i + j] = 2;
+                    }
+                } else {
+                    palindrome[j][i + j] = palindrome[j][i + j - 1];
+                    if (palindrome[j + 1][i + j] > palindrome[j][i + j]) {
+                        palindrome[j][i + j] = palindrome[j + 1][i + j];
+                    }
+                }
+                System.out.println(j + "\t" + (i + j) + "\t" + palindrome[j][i + j]);
+            }
+        }
+        return palindrome[0][s.length() - 1];
+    }
+
+    public boolean checkSubarraySums(int[] nums, int k) {
+        if (nums.length < 2) {
+            return false;
+        }
+        if (k == 0) {
+            int count = 0;
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] == 0) {
+                    count++;
+                } else {
+                    count = 0;
+                }
+                if (count >= 2) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        Map<Integer, Integer> index = new HashMap<>();
+        int sum=0;
+        for (int i = 0; i < nums.length; i++) {
+            sum=(sum+nums[i])%k;
+            if(sum==0&&i>0){
+                return true;
+            }
+            if(index.containsKey(sum)){
+                if(i-index.get(sum)>=1){
+                    return true;
+                }
+            }else {
+                index.put(sum,i);
+            }
+        }
+        return false;
+    }
+
+    public boolean checkSubarraySum(int[] nums, int k) {
+        if (nums.length < 2) {
+            return false;
+        }
+        if (k == 0) {
+            int count = 0;
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] == 0) {
+                    count++;
+                } else {
+                    count = 0;
+                }
+                if (count >= 2) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        int[][] num = new int[2][nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            num[0][i] = nums[i] % k;
+        }
+        for (int i = 1; i < nums.length; i++) {
+            for (int j = 0; i + j < nums.length; j++) {
+                if ((num[0][i + j - 1] + nums[i + j]) % k == 0) {
+                    return true;
+                }
+                num[1][i + j] = (num[0][i + j - 1] + nums[i + j]) % k;
+            }
+            int[] temp = num[0];
+            num[0] = num[1];
+            num[1] = temp;
+        }
+        return false;
     }
 
     public static void main(String[] args) {
@@ -1488,18 +1591,18 @@ public class Medium {
 //            one=one.next;
 //        }
 //        System.out.println(medium.findDuplicates(new int[]{4,3,2,7,8,2,3,1}));
-        TreeNode root = new TreeNode(1, 1);
+//        TreeNode root = new TreeNode(1, 1);
         //  TreeNode a1 = new TreeNode(2, 1);
         // TreeNode a2 = new TreeNode(3, 1);
         //TreeNode a3 = new TreeNode(4, 1);
-        //  TreeNode a4 = new TreeNode(5, 1);
-        TreeNode b1 = new TreeNode(6, 1);
+//        TreeNode a4 = new TreeNode(5, 1);
+//        TreeNode b1 = new TreeNode(6, 1);
         // TreeNode b2 = new TreeNode(7, 1);
 //        TreeNode b3 = new TreeNode(6, 1);
 //        TreeNode b4 = new TreeNode(8, 1);
 //        TreeNode b5 = new TreeNode(10, 1);
-        root.left = null;
-        root.right = b1;
+//        root.left = null;
+//        root.right = b1;
         //   a1.left = a3;
 //        a2.left = a4;
         // a2.right = b1;
@@ -1537,7 +1640,9 @@ public class Medium {
 //        System.out.println(Arrays.toString(medium.findDiagonalOrder(new int[][]{{1,2,3,4},{4,5,6},{7,8,9}})));
 //        System.out.println(Arrays.toString(medium.findFrequentTreeSum(root)));
 //        System.out.println(medium.findBottomLeftValue(root));
-        System.out.println(medium.largestValuess(root));
+//        System.out.println(medium.largestValuess(root));
+//        System.out.println(medium.longestPalindromeSubseq("bbbab"));
+        System.out.println(medium.checkSubarraySums(new int[]{1,2,1}, 2));
     }
 
     class Node {

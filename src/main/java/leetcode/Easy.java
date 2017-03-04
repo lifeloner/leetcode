@@ -1039,6 +1039,31 @@ public class Easy {
         return result;
     }
 
+    public boolean detectCapitalUse(String word) {
+        if(word==null||word.length()<2){
+            return true;
+        }
+        int length=0;
+        char c=word.charAt(0);
+        boolean flag;
+        if(c-'A'>=0&&c-'Z'<=0){
+            length++;
+            flag=true;
+        }else {
+            flag=false;
+        }
+        for(int i=1;i<word.length();i++){
+            c=word.charAt(i);
+            if(c-'A'>=0&&c-'Z'<=0){
+                length++;
+            }
+        }
+        if((length==1&&flag)||length==0||length==word.length()){
+            return true;
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         Easy easy = new Easy();
 //        System.out.println(easy.fi
@@ -1091,7 +1116,8 @@ public class Easy {
 //        System.out.println(Arrays.toString(easy.constructRectangle(10000000)));
 //        System.out.println(Arrays.toString(easy.nextGreaterElement(new int[]{4, 1, 2}, new int[]{1, 2, 3, 4})));
 //        System.out.println(Arrays.toString(easy.findWords(new String[]{"Hello", "Alaska", "Dad", "Peace"})));
-        System.out.println(Arrays.toString(easy.findRelativeRanks(new int[]{6})));
+//        System.out.println(Arrays.toString(easy.findRelativeRanks(new int[]{6})));
+        System.out.println(easy.detectCapitalUse("Ecode"));
     }
 
 }

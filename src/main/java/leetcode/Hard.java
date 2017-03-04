@@ -7,6 +7,58 @@ import java.util.Map;
  * Created by yang on 2016/9/23.
  */
 public class Hard {
+
+    public boolean reslove(int[] A) {
+        if (A.length < 7) {
+            return false;
+        }
+        int[] left = new int[A.length], right = new int[A.length];
+        int sum = 0;
+        for (int i = 0; i < A.length; i++) {
+            sum += A[i];
+            left[i] = sum;
+        }
+        sum = 0;
+        for (int i = A.length - 1; i >= 0; i--) {
+            sum += A[i];
+            right[i] = sum;
+        }
+        int a = 1, b = A.length - 2, c = 0, d = 0, m = 0, n = 0, e = left[0], f = right[A.length - 1];
+        while (a <= b) {
+            if (e == f) {
+                System.out.println(a+"\t"+b+"\t"+e+"\t"+c);
+                if (c != 0) {
+                    if(a!=b){
+                        e = left[a] - m;
+                        a++;
+                        continue;
+                    }
+                    if (a == b && 2*left[c - 1] == e) {
+                        return true;
+                    }
+                    e = left[c];
+                    f = right[d];
+                    m = 0;
+                    n = 0;
+                    c = 0;
+                    d = 0;
+                } else {
+                    c = a++;
+                    d = b--;
+                    m = A[c];
+                    n = A[d];
+                }
+            } else if (e < f) {
+                e = left[a] - m;
+                a++;
+            } else {
+                f = right[b] - n;
+                b--;
+            }
+        }
+        return false;
+    }
+
     public boolean canCross(int[] stones) {
         if (stones == null || stones.length < 2) {
             return true;
@@ -116,7 +168,8 @@ public class Hard {
         Hard hard = new Hard();
 //        System.out.println(hard.canCross(new int[]{0,1,2,3,4,8,9,11}));
 //        System.out.println(hard.splitArray(new int[]{7, 2, 5, 10, 8}, 2));
-        System.out.println(hard.predictTheWinner(new int[]{1, 5, 233, 7}));
+//        System.out.println(hard.predictTheWinner(new int[]{1, 5, 233, 7}));
+        System.out.println(hard.reslove(new int[]{2, 5, 1, 1, 1, 1, 4, 1, 7, 3, 7}));
     }
 
 }
