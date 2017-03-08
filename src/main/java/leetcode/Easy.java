@@ -957,30 +957,30 @@ public class Easy {
         }};
         char c;
         String temp;
-        for(String str:words){
-            if(str.length()>0){
-                temp=str.toLowerCase();
-                c=temp.charAt(0);
-                if(one.contains(c)&&contains(one,temp)){
+        for (String str : words) {
+            if (str.length() > 0) {
+                temp = str.toLowerCase();
+                c = temp.charAt(0);
+                if (one.contains(c) && contains(one, temp)) {
                     list.add(str);
-                }else if(two.contains(c)&&contains(two,temp)){
+                } else if (two.contains(c) && contains(two, temp)) {
                     list.add(str);
-                }else{
-                    if(contains(three,temp)){
+                } else {
+                    if (contains(three, temp)) {
                         list.add(str);
                     }
                 }
             }
         }
-        String[]result=new String[list.size()];
+        String[] result = new String[list.size()];
         return list.toArray(result);
     }
 
-    public boolean contains(Set<Character>set,String string){
+    public boolean contains(Set<Character> set, String string) {
         char c;
-        for(int i=0;i<string.length();i++){
-            c=string.charAt(i);
-            if(!set.contains(c)){
+        for (int i = 0; i < string.length(); i++) {
+            c = string.charAt(i);
+            if (!set.contains(c)) {
                 return false;
             }
         }
@@ -988,80 +988,176 @@ public class Easy {
     }
 
     public String convertToBase7(int num) {
-        if(num==0){
+        if (num == 0) {
             return "0";
         }
-        StringBuilder stringBuilder=new StringBuilder();
-        boolean flag=true;
-        if(num<0){
-            num=-num;
-            flag=!flag;
+        StringBuilder stringBuilder = new StringBuilder();
+        boolean flag = true;
+        if (num < 0) {
+            num = -num;
+            flag = !flag;
         }
-        while(num>0){
-            stringBuilder.append(num%7);
-            num=num/7;
+        while (num > 0) {
+            stringBuilder.append(num % 7);
+            num = num / 7;
         }
-        if(!flag){
+        if (!flag) {
             stringBuilder.append('-');
         }
         return stringBuilder.reverse().toString();
     }
 
     public String[] findRelativeRanks(int[] nums) {
-        if(nums==null){
+        if (nums == null) {
             return null;
         }
-        if(nums.length==0){
+        if (nums.length == 0) {
             return new String[0];
         }
-        int [][]array=new int[nums.length][2];
-        for(int i=0;i<nums.length;i++){
-            array[i][0]=nums[i];
-            array[i][1]=i;
+        int[][] array = new int[nums.length][2];
+        for (int i = 0; i < nums.length; i++) {
+            array[i][0] = nums[i];
+            array[i][1] = i;
         }
         Arrays.sort(array, new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
-                return o2[0]-o1[0];
+                return o2[0] - o1[0];
             }
         });
-        String[]result=new String[nums.length];
-        result[array[0][1]]="Gold Medal";
-        if(result.length>1) {
+        String[] result = new String[nums.length];
+        result[array[0][1]] = "Gold Medal";
+        if (result.length > 1) {
             result[array[1][1]] = "Silver Medal";
         }
-        if(result.length>2) {
+        if (result.length > 2) {
             result[array[2][1]] = "Bronze Medal";
         }
-        for(int i=3;i<array.length;i++){
-            result[array[i][1]]=String.valueOf(i+1);
+        for (int i = 3; i < array.length; i++) {
+            result[array[i][1]] = String.valueOf(i + 1);
         }
         return result;
     }
 
     public boolean detectCapitalUse(String word) {
-        if(word==null||word.length()<2){
+        if (word == null || word.length() < 2) {
             return true;
         }
-        int length=0;
-        char c=word.charAt(0);
+        int length = 0;
+        char c = word.charAt(0);
         boolean flag;
-        if(c-'A'>=0&&c-'Z'<=0){
+        if (c - 'A' >= 0 && c - 'Z' <= 0) {
             length++;
-            flag=true;
-        }else {
-            flag=false;
+            flag = true;
+        } else {
+            flag = false;
         }
-        for(int i=1;i<word.length();i++){
-            c=word.charAt(i);
-            if(c-'A'>=0&&c-'Z'<=0){
+        for (int i = 1; i < word.length(); i++) {
+            c = word.charAt(i);
+            if (c - 'A' >= 0 && c - 'Z' <= 0) {
                 length++;
             }
         }
-        if((length==1&&flag)||length==0||length==word.length()){
+        if ((length == 1 && flag) || length == 0 || length == word.length()) {
             return true;
         }
         return false;
+    }
+
+    public int getMinimumDifference(TreeNode root) {
+        if (root == null) {
+            return Integer.MAX_VALUE;
+        }
+        List<Integer> list = new ArrayList<>(2);
+        list.add(Integer.MAX_VALUE);
+        visit(list, root);
+        return list.get(0);
+    }
+
+    public void visit(List<Integer> list, TreeNode node) {
+        if (node.left != null) {
+            visit(list, node.left);
+        }
+        if (list.size() < 2) {
+            list.add(node.val);
+        } else {
+            if (node.val - list.get(1) < list.get(0)) {
+                list.set(0, node.val - list.get(1));
+            }
+            list.set(1, node.val);
+        }
+        if (node.right != null) {
+            visit(list, node.right);
+        }
+    }
+
+    public int hammingDistance(int x, int y) {
+        int count = 0;
+        while (x != 0 && y != 0) {
+            if (x - 2 * (x >> 1) != y - 2 * (y >> 1)) {
+                count++;
+            }
+            x = x >> 1;
+            y = y >> 1;
+        }
+        while (x != 0) {
+            if (x - 2 * (x >> 1) != 0) {
+                count++;
+            }
+            x = x >> 1;
+        }
+        while (y != 0) {
+            if (y - 2 * (y >> 1) != 0) {
+                count++;
+            }
+            y = y >> 1;
+        }
+        return count;
+    }
+
+    public int countSegments(String s) {
+        if (s == null) {
+            return 0;
+        }
+        int count = 0;
+        boolean isNotBlack = false;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == ' ') {
+                if (isNotBlack) {
+                    count++;
+                }
+                isNotBlack = false;
+            } else {
+                isNotBlack = true;
+            }
+        }
+        if (isNotBlack) {
+            count++;
+        }
+        return count;
+    }
+
+    public int findPairs(int[] nums, int k) {
+        if(nums.length<2||k<0){
+            return 0;
+        }
+        Arrays.sort(nums);
+        int left=0,right=1,count=0;
+        while(left<nums.length&&right<nums.length){
+            if(nums[right]-nums[left]==k&&(left==0||nums[left]!=nums[left-1])){
+                if(left==right){
+                    right++;
+                    continue;
+                }
+                count++;
+                left++;
+            }else if(nums[right]-nums[left]<k){
+                right++;
+            }else{
+                left++;
+            }
+        }
+        return count;
     }
 
     public static void main(String[] args) {
@@ -1070,15 +1166,15 @@ public class Easy {
         //  System.out.println(easy.addStrings("899","16"));ndNthDigit(189));
 //        System.out.println(easy.toHex(0));
 //        System.out.println(easy.longestPalindrome("ccccAAdd"));
-//        TreeNode a = new TreeNode(10);
-//        TreeNode b = new TreeNode(5);
-//        TreeNode c = new TreeNode(13);
+//        TreeNode a = new TreeNode(1);
+//        TreeNode b = new TreeNode(3);
+//        TreeNode c = new TreeNode(2);
 //        TreeNode d = new TreeNode(13);
 //        TreeNode e = new TreeNode(5);
 //        TreeNode f = new TreeNode(5);
 //        TreeNode g = new TreeNode(13);
-//        a.left = b;
-//        b.left=e;
+//        a.right = b;
+//        b.left = c;
 //        b.right=f;
 //        a.right = c;
 //        c.left=d;
@@ -1117,7 +1213,11 @@ public class Easy {
 //        System.out.println(Arrays.toString(easy.nextGreaterElement(new int[]{4, 1, 2}, new int[]{1, 2, 3, 4})));
 //        System.out.println(Arrays.toString(easy.findWords(new String[]{"Hello", "Alaska", "Dad", "Peace"})));
 //        System.out.println(Arrays.toString(easy.findRelativeRanks(new int[]{6})));
-        System.out.println(easy.detectCapitalUse("Ecode"));
+//        System.out.println(easy.detectCapitalUse("Ecode"));
+//        System.out.println(easy.getMinimumDifference(a));
+//        System.out.println(easy.hammingDistance(1,4));
+//        System.out.println(easy.countSegments(" a  b  b,  "));
+        System.out.println(easy.findPairs(new int[]{1,1,2,2,3,4,3}, 0));
     }
 
 }

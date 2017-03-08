@@ -1500,18 +1500,18 @@ public class Medium {
             return false;
         }
         Map<Integer, Integer> index = new HashMap<>();
-        int sum=0;
+        int sum = 0;
         for (int i = 0; i < nums.length; i++) {
-            sum=(sum+nums[i])%k;
-            if(sum==0&&i>0){
+            sum = (sum + nums[i]) % k;
+            if (sum == 0 && i > 0) {
                 return true;
             }
-            if(index.containsKey(sum)){
-                if(i-index.get(sum)>=1){
+            if (index.containsKey(sum)) {
+                if (i - index.get(sum) >= 1) {
                     return true;
                 }
-            }else {
-                index.put(sum,i);
+            } else {
+                index.put(sum, i);
             }
         }
         return false;
@@ -1551,6 +1551,206 @@ public class Medium {
             num[1] = temp;
         }
         return false;
+    }
+
+    public int change(int amount, int[] coins) {
+        int[][] dp = new int[coins.length + 1][amount + 1];
+        for (int i = 0; i <= coins.length; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i <= amount; i++) {
+            dp[0][i] = 0;
+        }
+        for (int i = 1; i <= coins.length; i++) {
+            for (int j = 1; j <= amount; j++) {
+                dp[i][j] = dp[i - 1][j];
+                if (j >= coins[i - 1]) {
+                    dp[i][j] += dp[i][j - coins[i - 1]];
+                }
+            }
+        }
+        return dp[coins.length][amount];
+    }
+
+    public String findLongestWord(String s, List<String> d) {
+        if (d == null) {
+            return null;
+        }
+        String result = "";
+        List<List<Integer>> index = new ArrayList<>(26);
+        for (int i = 0; i < 26; i++) {
+            index.add(new ArrayList<>());
+        }
+        int k;
+        for (int i = 0; i < s.length(); i++) {
+            k = s.charAt(i) - 'a';
+            index.get(k).add(i);
+        }
+        for (int i = 0; i < d.size(); i++) {
+            if (d.get(i).length() > s.length()) {
+                continue;
+            }
+            if ((d.get(i).length() > result.length() || (d.get(i).length() == result.length() && d.get(i).compareTo(result) < 0))) {
+                if (compareString(index, d.get(i))) {
+                    result = d.get(i);
+                }
+            }
+        }
+        return result;
+    }
+
+
+    public boolean compareString(List<List<Integer>> index, String string) {
+        int[] key = new int[26];
+        for (int i = 0; i < 26; i++) {
+            key[i] = 0;
+        }
+        int k, current = -1, m;
+        for (int i = 0; i < string.length(); i++) {
+            k = string.charAt(i) - 'a';
+            if (index.get(k).size() <= key[k]) {
+                return false;
+            }
+            m = index.get(k).get(key[k]);
+            while (m <= current) {
+                key[k]++;
+                if (key[k] >= index.get(k).size()) {
+                    return false;
+                }
+                m = index.get(k).get(key[k]);
+            }
+            current = m;
+            key[k]++;
+        }
+        return true;
+    }
+
+    public boolean compareStrs(String one, String two) {
+        int m = 0, n = 0;
+        while (n < two.length()) {
+            while (m < one.length() && one.charAt(m) != two.charAt(n)) {
+                m++;
+            }
+            if (m == one.length()) {
+                return false;
+            }
+            m++;
+            n++;
+        }
+        return true;
+    }
+
+    public boolean compareStr(String one, String two) {
+        if (one.length() < two.length()) {
+            return true;
+        }
+        if (one.length() > two.length()) {
+            return false;
+        }
+        return one.compareTo(two) <= 0 ? false : true;
+
+    }
+
+    public int findMaxLength(int[] nums) {
+        if (nums == null || nums.length < 2) {
+            return 0;
+        }
+        int[] big = new int[nums.length + 1];
+        int[] small = new int[nums.length + 1];
+        int sum = 0, result = 0, t;
+        for (int i = 0; i < nums.length; i++) {
+            big[i + 1] = nums.length + 1;
+            small[i + 1] = nums.length + 1;
+            sum += nums[i];
+            t = 2 * sum - i - 1;
+            if (t == 0) {
+                if (i + 1 > result) {
+                    result = i + 1;
+                }
+            } else if (t > 0) {
+                if (i < big[t]) {
+                    big[t] = i;
+                }
+                if (i - big[t] > result) {
+                    result = i - big[t];
+                }
+            } else {
+                t = -t;
+                if (small[t] > i) {
+                    small[t] = i;
+                }
+                if (i - small[t] > result) {
+                    result = i - small[t];
+                }
+            }
+        }
+        return result;
+    }
+
+    public void permutation(int k, int[] num, int[] result) {
+        if (k == num.length) {
+            result[0]++;
+        }
+        for (int i = k; i < num.length; i++) {
+            if (num[i] % (k + 1) == 0 || (k + 1) % num[i] == 0) {
+                int temp = num[k];
+                num[k] = num[i];
+                num[i] = temp;
+                permutation(k + 1, num, result);
+                temp = num[k];
+                num[k] = num[i];
+                num[i] = temp;
+            }
+        }
+    }
+
+    public int countArrangement(int N) {
+        if (N <= 0) {
+            return 0;
+        }
+        int[] num = new int[N], result = new int[1];
+        result[0] = 0;
+        for (int i = 0; i < N; i++) {
+            num[i] = i + 1;
+        }
+        permutation(0, num, result);
+        return result[0];
+    }
+
+    public int longestSubstring(String s, int k) {
+        if (s == null || s.length() < k) {
+            return 0;
+        }
+        int[][] count = new int[s.length() + 1][26];
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = 0; j < 26; j++) {
+                count[i + 1][j] = count[i][j];
+            }
+            count[i + 1][s.charAt(i) - 'a']++;
+        }
+        int t = 0, max = 0, m;
+        boolean flag;
+        while (t < s.length()) {
+            m = t;
+            for (int i = s.length() - 1; i - t + 1 >= k; i--) {
+                flag = true;
+                for (int j = 0; j < 26; j++) {
+                    if (count[i + 1][j] - count[t][j] < k && count[i + 1][j] - count[t][j] > 0) {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    if (i - t + 1 > max) {
+                        max = i - t + 1;
+                    }
+                    m = i;
+                    break;
+                }
+            }
+            t = m + 1;
+        }
+        return max;
     }
 
     public static void main(String[] args) {
@@ -1642,7 +1842,17 @@ public class Medium {
 //        System.out.println(medium.findBottomLeftValue(root));
 //        System.out.println(medium.largestValuess(root));
 //        System.out.println(medium.longestPalindromeSubseq("bbbab"));
-        System.out.println(medium.checkSubarraySums(new int[]{1,2,1}, 2));
+//        System.out.println(medium.checkSubarraySums(new int[]{1, 2, 1}, 2));
+//        System.out.println(medium.change(0,new int[]{}));
+//        List<String> list = new ArrayList<String>() {{
+//            add("ale");
+//            add("appla");
+//            add("appea");
+//        }};
+//        System.out.println(medium.findLongestWord("abpcplea", list));
+//        System.out.println(medium.findMaxLength(new int[]{0, 1, 0, 0, 1}));
+//        System.out.println(medium.countArrangement(6));
+        System.out.println(medium.longestSubstring("aaabb", 3));
     }
 
     class Node {
