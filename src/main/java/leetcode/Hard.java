@@ -26,14 +26,14 @@ public class Hard {
         int a = 1, b = A.length - 2, c = 0, d = 0, m = 0, n = 0, e = left[0], f = right[A.length - 1];
         while (a <= b) {
             if (e == f) {
-                System.out.println(a+"\t"+b+"\t"+e+"\t"+c);
+                System.out.println(a + "\t" + b + "\t" + e + "\t" + c);
                 if (c != 0) {
-                    if(a!=b){
+                    if (a != b) {
                         e = left[a] - m;
                         a++;
                         continue;
                     }
-                    if (a == b && 2*left[c - 1] == e) {
+                    if (a == b && 2 * left[c - 1] == e) {
                         return true;
                     }
                     e = left[c];
@@ -106,18 +106,27 @@ public class Hard {
             return 0;
         }
         int[][] array = new int[m][nums.length];
-        int max = 0;
+        int max = 0, min;
         for (int i = 0; i < nums.length; i++) {
             max += nums[i];
             array[0][i] = max;
         }
+        boolean flag;
         for (int i = 1; i < m; i++) {
             for (int j = i; j < nums.length; j++) {
                 array[i][j] = Math.max(nums[j], array[i - 1][j - 1]);
-                max = nums[j];
-                for (int k = j - 1; k > i - 1; k--) {
+                max = 0;
+                flag = true;
+                for (int k = j; k >= i && flag; k--) {
                     max += nums[k];
-                    array[i][j] = Math.min(array[i][j], Math.max(array[i - 1][k - 1], max));
+                    min = array[i - 1][k - 1];
+                    if (max >= min || max >= array[i][j]) {
+                        min = max;
+                        flag = false;
+                    }
+                    if (min < array[i][j]) {
+                        array[i][j] = min;
+                    }
                 }
             }
         }
@@ -164,12 +173,57 @@ public class Hard {
         return array[0][nums.length - 1] >= 0 ? true : false;
     }
 
+    public int maxSumSubmatrix(int[][] matrix, int k) {
+        if (matrix == null || matrix.length == 0) {
+            return 0;
+        }
+        int row = matrix.length, column = matrix[0].length, sum, result = Integer.MIN_VALUE;
+        int[][] num = new int[row][column];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                sum = matrix[i][j];
+                if (i - 1 >= 0) {
+                    sum += num[i - 1][j];
+                }
+                if (j - 1 >= 0) {
+                    sum += num[i][j - 1];
+                }
+                if (i - 1 >= 0 && j - 1 >= 0) {
+                    sum -= num[i - 1][j - 1];
+                }
+                num[i][j] = sum;
+                for (int m = 0; m <= i; m++) {
+                    for (int n = 0; n <= j; n++) {
+                        sum=num[i][j];
+                        if (m - 1 >= 0) {
+                            sum -= num[m - 1][j];
+                        }
+                        if (n - 1 >= 0) {
+                            sum -= num[i][n - 1];
+                        }
+                        if (m - 1 >= 0 && n - 1 >= 0) {
+                            sum += num[m - 1][n - 1];
+                        }
+                        if (sum == k) {
+                            return k;
+                        }
+                        if (sum < k && sum > result) {
+                            result = sum;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         Hard hard = new Hard();
 //        System.out.println(hard.canCross(new int[]{0,1,2,3,4,8,9,11}));
-//        System.out.println(hard.splitArray(new int[]{7, 2, 5, 10, 8}, 2));
+//        System.out.println(hard.splitArray(new int[]{7, 2, 5, 10, 8}, 3));
 //        System.out.println(hard.predictTheWinner(new int[]{1, 5, 233, 7}));
-        System.out.println(hard.reslove(new int[]{2, 5, 1, 1, 1, 1, 4, 1, 7, 3, 7}));
+//        System.out.println(hard.reslove(new int[]{2, 5, 1, 1, 1, 1, 4, 1, 7, 3, 7}));
+        System.out.println(hard.maxSumSubmatrix(new int[][]{{1, 0, 5}, {0, -2, 3}}, 8));
     }
 
 }
