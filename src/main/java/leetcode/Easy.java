@@ -1138,26 +1138,73 @@ public class Easy {
     }
 
     public int findPairs(int[] nums, int k) {
-        if(nums.length<2||k<0){
+        if (nums.length < 2 || k < 0) {
             return 0;
         }
         Arrays.sort(nums);
-        int left=0,right=1,count=0;
-        while(left<nums.length&&right<nums.length){
-            if(nums[right]-nums[left]==k&&(left==0||nums[left]!=nums[left-1])){
-                if(left==right){
+        int left = 0, right = 1, count = 0;
+        while (left < nums.length && right < nums.length) {
+            if (nums[right] - nums[left] == k && (left == 0 || nums[left] != nums[left - 1])) {
+                if (left == right) {
                     right++;
                     continue;
                 }
                 count++;
                 left++;
-            }else if(nums[right]-nums[left]<k){
+            } else if (nums[right] - nums[left] < k) {
                 right++;
-            }else{
+            } else {
                 left++;
             }
         }
         return count;
+    }
+
+    public int diameterOfBinaryTree(TreeNode root) {
+        int[] result = {1};
+        dfs(root, result);
+        return result[0] - 1;
+    }
+
+    public int dfs(TreeNode root, int[] result) {
+        if (root == null) {
+            return 0;
+        }
+        int left = dfs(root.left, result), right = dfs(root.right, result);
+        if (left + 1 + right > result[0]) {
+            result[0] = left + right + 1;
+        }
+        return 1+(left >= right ? left : right);
+    }
+
+    public String reverseStr(String s, int k) {
+        if(s==null||s.length()==0){
+            return s;
+        }
+        StringBuilder stringBuilder=new StringBuilder();
+        int len=s.length(),t,i=0,m;
+        boolean flag=true;
+        while(i<len){
+            if(i+k<len){
+                t=i+k;
+            }
+            else{
+                t=len;
+            }
+            if(flag){
+                m=t-1;
+                while(i<=m){
+                    stringBuilder.append(s.charAt(m--));
+                }
+            }else {
+                while(i<t) {
+                    stringBuilder.append(s.charAt(i++));
+                }
+            }
+            i=t;
+            flag=!flag;
+        }
+        return stringBuilder.toString();
     }
 
     public static void main(String[] args) {
@@ -1173,12 +1220,10 @@ public class Easy {
 //        TreeNode e = new TreeNode(5);
 //        TreeNode f = new TreeNode(5);
 //        TreeNode g = new TreeNode(13);
-//        a.right = b;
-//        b.left = c;
-//        b.right=f;
+//        a.left = b;
 //        a.right = c;
-//        c.left=d;
-//        c.right=g;
+//        b.left = f;
+//        b.right = d;
 //        TreeNode d=new TreeNode(3);
 //        TreeNode e=new TreeNode(2);
 //        b.left=d;
@@ -1217,7 +1262,9 @@ public class Easy {
 //        System.out.println(easy.getMinimumDifference(a));
 //        System.out.println(easy.hammingDistance(1,4));
 //        System.out.println(easy.countSegments(" a  b  b,  "));
-        System.out.println(easy.findPairs(new int[]{1,1,2,2,3,4,3}, 0));
+//        System.out.println(easy.findPairs(new int[]{1, 1, 2, 2, 3, 4, 3}, 0));
+//        System.out.println(easy.diameterOfBinaryTree(a));
+        System.out.println(easy.reverseStr("abcdefghg",3));
     }
 
 }
