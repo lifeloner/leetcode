@@ -1160,6 +1160,32 @@ public class Easy {
         return count;
     }
 
+    static long doneTime(int maxQps,String[] rtList,int requestNum,int threadNum) {
+//        if(rtList==null||rtList.length==0){
+//            return Integer.MAX_VALUE;
+//        }
+//        int[]rt=new int[rtList.length];
+//        for(int i=0;i<rtList.length;i++){
+//            rt[i]=Integer.parseInt(rtList[i]);
+//        }
+//        int[]num=new int[threadNum];
+//        Queue<Integer>queue=new PriorityQueue<>();
+//        for(int i=0;i<rt.length;i++){
+//            queue.add(rt[i]);
+//            queue.add(i);
+//        }
+//        Long sum=0L;
+//        for(int i=0;i<requestNum;i++){
+//            int k=queue.poll();
+//            int index=queue.poll();
+//            while(1000/rt[index]>maxQps){
+//                queue.add(k+rt[index]);
+//                queue.add()
+//            }
+//        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         Easy easy = new Easy();
 //        System.out.println(easy.fi
