@@ -1753,6 +1753,70 @@ public class Medium {
         return max;
     }
 
+    public List<List<Integer>> updateMatrix(List<List<Integer>> matrix) {
+        if (matrix == null) {
+            return null;
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        int row = matrix.size(), colmn = 0, len;
+        if (row == 0) {
+            return result;
+        }
+        colmn = matrix.get(0).size();
+        Queue<Integer> queue = new ArrayDeque<>();
+        boolean[][] visited = new boolean[row][colmn];
+        int[][] array = new int[row][colmn];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < colmn; j++) {
+                if (matrix.get(i).get(j) == 0) {
+                    queue.add(i);
+                    queue.add(j);
+                    array[i][j] = 0;
+                    visited[i][j] = true;
+                }
+            }
+        }
+        while (!queue.isEmpty()) {
+            len = queue.size();
+            while (len > 0) {
+                int i = queue.poll(), j = queue.poll();
+                if (i - 1 >= 0 && !visited[i - 1][j]) {
+                    queue.add(i - 1);
+                    queue.add(j);
+                    array[i - 1][j] = array[i][j] + 1;
+                    visited[i - 1][j] = true;
+                }
+                if (i + 1 < row && !visited[i + 1][j]) {
+                    queue.add(i + 1);
+                    queue.add(j);
+                    array[i + 1][j] = array[i][j] + 1;
+                    visited[i + 1][j] = true;
+                }
+                if (j - 1 >= 0 && !visited[i][j - 1]) {
+                    queue.add(i);
+                    queue.add(j - 1);
+                    array[i][j - 1] = array[i][j] + 1;
+                    visited[i][j - 1] = true;
+                }
+                if (j + 1 < colmn && !visited[i][j + 1]) {
+                    queue.add(i);
+                    queue.add(j + 1);
+                    array[i][j + 1] = array[i][j] + 1;
+                    visited[i][j + 1] = true;
+                }
+                len-=2;
+            }
+        }
+        for (int i = 0; i < row; i++) {
+            List<Integer> list = new ArrayList<>(colmn);
+            for (int j = 0; j < colmn; j++) {
+                list.add(array[i][j]);
+            }
+            result.add(list);
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         Medium medium = new Medium();
         //  System.out.println(Arrays.toString(medium.twoSum(new int []{0,0,11,15},0)));
@@ -1852,7 +1916,24 @@ public class Medium {
 //        System.out.println(medium.findLongestWord("abpcplea", list));
 //        System.out.println(medium.findMaxLength(new int[]{0, 1, 0, 0, 1}));
 //        System.out.println(medium.countArrangement(6));
-        System.out.println(medium.longestSubstring("aaabb", 3));
+//        System.out.println(medium.longestSubstring("aaabb", 3));
+        List<List<Integer>>list=new ArrayList<>();
+        list.add(new ArrayList<Integer>(){{
+            add(0);
+            add(0);
+            add(0);
+        }});
+        list.add(new ArrayList<Integer>(){{
+            add(0);
+            add(1);
+            add(0);
+        }});
+        list.add(new ArrayList<Integer>(){{
+            add(1);
+            add(1);
+            add(1);
+        }});
+        System.out.println(medium.updateMatrix(list));
     }
 
     class Node {
