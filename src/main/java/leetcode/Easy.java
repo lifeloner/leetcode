@@ -1175,37 +1175,117 @@ public class Easy {
         if (left + 1 + right > result[0]) {
             result[0] = left + right + 1;
         }
-        return 1+(left >= right ? left : right);
+        return 1 + (left >= right ? left : right);
     }
 
     public String reverseStr(String s, int k) {
-        if(s==null||s.length()==0){
+        if (s == null || s.length() == 0) {
             return s;
         }
-        StringBuilder stringBuilder=new StringBuilder();
-        int len=s.length(),t,i=0,m;
-        boolean flag=true;
-        while(i<len){
-            if(i+k<len){
-                t=i+k;
+        StringBuilder stringBuilder = new StringBuilder();
+        int len = s.length(), t, i = 0, m;
+        boolean flag = true;
+        while (i < len) {
+            if (i + k < len) {
+                t = i + k;
+            } else {
+                t = len;
             }
-            else{
-                t=len;
-            }
-            if(flag){
-                m=t-1;
-                while(i<=m){
+            if (flag) {
+                m = t - 1;
+                while (i <= m) {
                     stringBuilder.append(s.charAt(m--));
                 }
-            }else {
-                while(i<t) {
+            } else {
+                while (i < t) {
                     stringBuilder.append(s.charAt(i++));
                 }
             }
-            i=t;
-            flag=!flag;
+            i = t;
+            flag = !flag;
         }
         return stringBuilder.toString();
+    }
+
+    public boolean checkPerfectNumber(int num) {
+        if (num <= 2) {
+            return false;
+        }
+        int sum = 1, k = 2;
+        while (k * k < num) {
+            if (num % k == 0) {
+                sum += k;
+                sum += num / k;
+            }
+            if (sum > num) {
+                return false;
+            }
+            k++;
+        }
+        if (k * k == sum) {
+            sum += k;
+        }
+        return sum == num ? true : false;
+    }
+
+    public int findLUSlength(String a, String b) {
+        if (a == null || b == null || a == b) {
+            return -1;
+        }
+        if (a.equals(b)) {
+            return -1;
+        }
+        int m = a.length(), n = b.length();
+        return m > n ? m : n;
+    }
+
+    public int findLUSlength(String[] strs) {
+        Arrays.sort(strs, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.length() - o1.length();
+            }
+        });
+        Map<String, Integer> map = new HashMap<>();
+        List<String> strings = new ArrayList<>();
+        int num = 0;
+        for (int i = 0; i < strs.length; i++) {
+            num = map.getOrDefault(strs[i], 0);
+            if (num > 1) {
+                continue;
+            }
+            map.put(strs[i], num + 1);
+            if (num == 0) {
+                strings.add(strs[i]);
+            }
+        }
+        int m, n, a, b;
+        for (int i = 0; i < strings.size(); i++) {
+            if (map.getOrDefault(strings.get(i), 0) > 1) {
+                continue;
+            }
+            num = 0;
+            m = strings.get(i).length();
+            for (int j = 0; j < i; j++) {
+                n = strings.get(j).length();
+                a = 0;
+                b = 0;
+                while (a < m && b < n) {
+                    if (strings.get(i).charAt(a) == strings.get(j).charAt(b)) {
+                        a++;
+                    }
+                    b++;
+                }
+                if (a == m) {
+                    break;
+                }
+                num++;
+            }
+            if (num == i) {
+                return m;
+            }
+        }
+        return -1;
     }
 
     public static void main(String[] args) {
@@ -1265,7 +1345,9 @@ public class Easy {
 //        System.out.println(easy.countSegments(" a  b  b,  "));
 //        System.out.println(easy.findPairs(new int[]{1, 1, 2, 2, 3, 4, 3}, 0));
 //        System.out.println(easy.diameterOfBinaryTree(a));
-        System.out.println(easy.reverseStr("abcdefghg",3));
+//        System.out.println(easy.reverseStr("abcdefghg", 3));
+//        System.out.println(easy.checkPerfectNumber(4));
+        System.out.println(easy.findLUSlength(new String[]{"abc","abc","bc","d","d","ac"}));
     }
 
 }
