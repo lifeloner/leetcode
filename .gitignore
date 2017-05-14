@@ -22,4 +22,8 @@
 hs_err_pid*
 .idea/
 target/
-leetcode.iml
+*.iml
+
+*.ipr
+*.iws
+*.DS_Store
