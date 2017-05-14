@@ -1,7 +1,5 @@
 package leetcode;
 
-import org.omg.PortableInterceptor.INACTIVE;
-
 import java.util.*;
 
 /**
