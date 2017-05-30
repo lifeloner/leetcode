@@ -112,58 +112,141 @@ public class Easy {
     }
 
     public static String reverseWords(String s) {
-        if(s==null||s.length()==0){
+        if (s == null || s.length() == 0) {
             return s;
         }
-        StringBuilder stringBuilder=new StringBuilder(s.length());
-        List<Character>list=new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder(s.length());
+        List<Character> list = new ArrayList<>();
         char c;
-        for(int i=0;i<s.length();i++){
-            c=s.charAt(i);
-            if(c==' '){
-                for(int j=list.size()-1;j>=0;j--){
+        for (int i = 0; i < s.length(); i++) {
+            c = s.charAt(i);
+            if (c == ' ') {
+                for (int j = list.size() - 1; j >= 0; j--) {
                     stringBuilder.append(list.get(j));
                 }
                 stringBuilder.append(c);
                 list.clear();
-            }
-            else {
+            } else {
                 list.add(c);
             }
         }
-        for(int i=list.size()-1;i>=0;i--){
+        for (int i = list.size() - 1; i >= 0; i--) {
             stringBuilder.append(list.get(i));
         }
         return stringBuilder.toString();
     }
 
     public static int singleNonDuplicate(int[] nums) {
-        if(nums==null||nums.length==0){
+        if (nums == null || nums.length == 0) {
             return 0;
         }
-        for(int i=1;i<nums.length;i++){
-            nums[0]^=nums[i];
+        for (int i = 1; i < nums.length; i++) {
+            nums[0] ^= nums[i];
         }
         return nums[0];
     }
 
     public static int subarraySum(int[] nums, int k) {
-        if(nums==null||nums.length==0){
+        if (nums == null || nums.length == 0) {
             return 0;
         }
-        Map<Integer,Integer>map=new HashMap<>();
-        int sum=0,count=0,m;
-        for(int num:nums){
-            sum+=num;
-            m=map.getOrDefault(sum-k,0);
-            if(sum==k){
+        Map<Integer, Integer> map = new HashMap<>();
+        int sum = 0, count = 0, m;
+        for (int num : nums) {
+            sum += num;
+            m = map.getOrDefault(sum - k, 0);
+            if (sum == k) {
                 count++;
             }
-            count+=m;
-            m=map.getOrDefault(sum,0);
-            map.put(sum,++m);
+            count += m;
+            m = map.getOrDefault(sum, 0);
+            map.put(sum, ++m);
         }
         return count;
+    }
+
+    public static int arrayPairSum(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        Arrays.sort(nums);
+        int sum = 0;
+        for (int i = 0; i < nums.length; i += 2) {
+            sum += nums[i];
+        }
+        return sum;
+    }
+
+    public static int findTilt(TreeNode root) {
+        int []num=new int[]{0};
+        postOrder(root,num);
+        return num[0];
+    }
+
+    public static int postOrder(TreeNode node,int[]num){
+        if(node==null){
+            return 0;
+        }
+        int left=postOrder(node.left,num),right=postOrder(node.right,num);
+        num[0]+=Math.abs(left-right);
+        return left+right+node.val;
+    }
+
+    public static int[][] matrixReshape(int[][] nums, int r, int c) {
+        if(nums==null||nums.length==0){
+            return nums;
+        }
+        int row=nums.length,column=nums[0].length;
+        if(row*column<r*c){
+            return nums;
+        }
+        int [][]result=new int[r][c];
+        int a=0,b=0;
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if(b==column){
+                    b=0;
+                    a++;
+                }
+                result[i][j]=nums[a][b++];
+            }
+        }
+        return result;
+    }
+
+    public static boolean check(int[]num){
+        for(int i=0;i<num.length;i++){
+            if(num[i]!=0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean checkInclusion(String s1, String s2) {
+        if(s1==null||s2==null||s2.length()<s1.length()){
+            return false;
+        }
+        int []count=new int[26];
+        for(int i=0;i<26;i++){
+            count[i]=0;
+        }
+        for(int i=0;i<s1.length();i++){
+           count[s1.charAt(i)-'a']++;
+           count[s2.charAt(i)-'a']--;
+        }
+        if(check(count)){
+            return true;
+        }
+        int len= s1.length();
+        for(int i=len;i<s2.length();i++){
+            count[s2.charAt(i-len)-'a']++;
+            count[s2.charAt(i)-'a']--;
+            if(check(count)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
@@ -180,6 +263,16 @@ public class Easy {
 //        System.out.println(reverseWords("Let's take LeetCode contest   aaa"));
 //        System.out.println(nextGreaterElement(123));
 //        System.out.println(singleNonDuplicate(new int[]{1,1,2}));
-        System.out.println(subarraySum(new int[]{-1,-1,-1},-1));
+        System.out.println(subarraySum(new int[]{-1, -1, -1}, -1));
+    }
+
+
+    private static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(int x) {
+            val = x;
+        }
     }
 }
