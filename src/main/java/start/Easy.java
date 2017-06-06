@@ -178,45 +178,45 @@ public class Easy {
     }
 
     public static int findTilt(TreeNode root) {
-        int []num=new int[]{0};
-        postOrder(root,num);
+        int[] num = new int[]{0};
+        postOrder(root, num);
         return num[0];
     }
 
-    public static int postOrder(TreeNode node,int[]num){
-        if(node==null){
+    public static int postOrder(TreeNode node, int[] num) {
+        if (node == null) {
             return 0;
         }
-        int left=postOrder(node.left,num),right=postOrder(node.right,num);
-        num[0]+=Math.abs(left-right);
-        return left+right+node.val;
+        int left = postOrder(node.left, num), right = postOrder(node.right, num);
+        num[0] += Math.abs(left - right);
+        return left + right + node.val;
     }
 
     public static int[][] matrixReshape(int[][] nums, int r, int c) {
-        if(nums==null||nums.length==0){
+        if (nums == null || nums.length == 0) {
             return nums;
         }
-        int row=nums.length,column=nums[0].length;
-        if(row*column<r*c){
+        int row = nums.length, column = nums[0].length;
+        if (row * column < r * c) {
             return nums;
         }
-        int [][]result=new int[r][c];
-        int a=0,b=0;
-        for(int i=0;i<r;i++){
-            for(int j=0;j<c;j++){
-                if(b==column){
-                    b=0;
+        int[][] result = new int[r][c];
+        int a = 0, b = 0;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                if (b == column) {
+                    b = 0;
                     a++;
                 }
-                result[i][j]=nums[a][b++];
+                result[i][j] = nums[a][b++];
             }
         }
         return result;
     }
 
-    public static boolean check(int[]num){
-        for(int i=0;i<num.length;i++){
-            if(num[i]!=0){
+    public static boolean check(int[] num) {
+        for (int i = 0; i < num.length; i++) {
+            if (num[i] != 0) {
                 return false;
             }
         }
@@ -224,29 +224,66 @@ public class Easy {
     }
 
     public static boolean checkInclusion(String s1, String s2) {
-        if(s1==null||s2==null||s2.length()<s1.length()){
+        if (s1 == null || s2 == null || s2.length() < s1.length()) {
             return false;
         }
-        int []count=new int[26];
-        for(int i=0;i<26;i++){
-            count[i]=0;
+        int[] count = new int[26];
+        for (int i = 0; i < 26; i++) {
+            count[i] = 0;
         }
-        for(int i=0;i<s1.length();i++){
-           count[s1.charAt(i)-'a']++;
-           count[s2.charAt(i)-'a']--;
+        for (int i = 0; i < s1.length(); i++) {
+            count[s1.charAt(i) - 'a']++;
+            count[s2.charAt(i) - 'a']--;
         }
-        if(check(count)){
+        if (check(count)) {
             return true;
         }
-        int len= s1.length();
-        for(int i=len;i<s2.length();i++){
-            count[s2.charAt(i-len)-'a']++;
-            count[s2.charAt(i)-'a']--;
-            if(check(count)){
+        int len = s1.length();
+        for (int i = len; i < s2.length(); i++) {
+            count[s2.charAt(i - len) - 'a']++;
+            count[s2.charAt(i) - 'a']--;
+            if (check(count)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static boolean isSameTree(TreeNode s, TreeNode t) {
+        if (s == null && t == null) {
+            return true;
+        }
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.val != t.val) {
+            return false;
+        }
+        return isSameTree(s.left, t.left) && isSameTree(s.right, t.right);
+    }
+
+    public static boolean isSubtree(TreeNode s, TreeNode t) {
+        if (s == null && t == null) {
+            return true;
+        }
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.val == t.val && isSameTree(s, t)) {
+            return true;
+        }
+        return isSubtree(s.left,t)||isSubtree(s.right,t);
+    }
+
+    public static int distributeCandies(int[] candies) {
+        if(candies==null||candies.length==0){
+            return 0;
+        }
+        Set<Integer>set=new HashSet<>();
+        for(int candy:candies) {
+            set.add(candy);
+        }
+        return Math.min(set.size(),candies.length/2);
     }
 
     public static void main(String[] args) {
@@ -271,6 +308,7 @@ public class Easy {
         int val;
         TreeNode left;
         TreeNode right;
+
         TreeNode(int x) {
             val = x;
         }
