@@ -157,23 +157,65 @@ public class Medium {
     }
 
     public TreeNode convertBST(TreeNode root) {
-        if(root==null){
+        if (root == null) {
             return root;
         }
-        visit(root,0);
+        visit(root, 0);
         return root;
     }
 
-    public int visit(TreeNode node,int value){
-        if(node.right!=null){
-            node.val+=visit(node.right,value);
-        }else{
-            node.val+=value;
+    public int visit(TreeNode node, int value) {
+        if (node.right != null) {
+            node.val += visit(node.right, value);
+        } else {
+            node.val += value;
         }
-        if(node.left!=null){
-           return visit(node.left,node.val);
+        if (node.left != null) {
+            return visit(node.left, node.val);
         }
         return node.val;
+    }
+
+    public static int findPaths(int m, int n, int N, int i, int j) {
+        if (N == 0 || m == 0 || n == 0) {
+            return 0;
+        }
+        int[][] array = new int[m][n],start=new int[m][n], temp = new int[m][n], temps;
+        for (int k = 0; k < m; k++) {
+            array[k][0]  ++;
+            start[k][0]  ++;
+            array[k][n - 1] ++;
+            start[k][n - 1] ++;
+        }
+        for (int k = 0; k < n; k++) {
+            array[0][k] ++;
+            start[0][k] ++;
+            array[m - 1][k] ++;
+            start[m - 1][k] ++;
+        }
+        for (int k = 1; k < N; k++) {
+            for (int a = 0; a < m; a++) {
+                for (int b = 0; b < n; b++) {
+                    temp[a][b] = start[a][b];
+                    if (a > 0) {
+                        temp[a][b]=(temp[a][b]+array[a-1][b])%1000000007;
+                    }
+                    if(a+1<m){
+                        temp[a][b]=(temp[a][b]+array[a+1][b])%1000000007;
+                    }
+                    if(b>0){
+                        temp[a][b]=(temp[a][b]+array[a][b-1])%1000000007;
+                    }
+                    if(b+1<n){
+                        temp[a][b]=(temp[a][b]+=array[a][b+1])%1000000007;
+                    }
+                }
+            }
+            temps=temp;
+            temp=array;
+            array=temps;
+        }
+        return array[i][j];
     }
 
     public static void main(String[] args) {
@@ -181,13 +223,15 @@ public class Medium {
 //        System.out.println(findMinDifference(new ArrayList<String>(){{add("00:01");
 //        add("23:59");
 //        }}));
-        System.out.println(complexNumberMultiply("1+-1i", "1+-1i"));
+//        System.out.println(complexNumberMultiply("1+-1i", "1+-1i"));
+        System.out.println(findPaths(2,2,2,0,0));
     }
 
     public class TreeNode {
         int val;
         TreeNode left;
         TreeNode right;
+
         TreeNode(int x) {
             val = x;
         }
