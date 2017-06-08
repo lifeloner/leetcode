@@ -286,6 +286,59 @@ public class Easy {
         return Math.min(set.size(),candies.length/2);
     }
 
+    public static int findUnsortedSubarray(int[] nums) {
+        if(nums==null||nums.length==0){
+            return 0;
+        }
+        int end=0,begin=nums.length-1,max=nums[end],min=nums[begin],len=nums.length-1;
+        for(int i=0;i<nums.length;i++){
+            if(max<=nums[i]){
+                max=nums[i];
+            }else{
+                end=i;
+            }
+            if(min>=nums[len-i]){
+                min=nums[len-i];
+            }else {
+                begin=len-i;
+            }
+        }
+        if(begin>=end){
+            return 0;
+        }
+        return end-begin+1;
+
+    }
+
+    public static String[] findRestaurant(String[] list1, String[] list2) {
+        List<String>list=new ArrayList<>();
+        String[]result;
+        if(list1==null||list2==null||list1.length==0||list2.length==0){
+            result=new String[0];
+            return list.toArray(result);
+        }
+        Map<String,Integer>mapIndex=new HashMap<>();
+        for(int i=0;i<list1.length;i++){
+            mapIndex.put(list1[i],i);
+        }
+        int sum=Integer.MAX_VALUE,index;
+        for(int i=0;i<list2.length;i++){
+           index=mapIndex.getOrDefault(list2[i],-1);
+            if(index>=0){
+                if(index+i==sum){
+                    list.add(list2[i]);
+                }
+                else if(index+i<sum){
+                    list.clear();
+                    list.add(list2[i]);
+                    sum=index+i;
+                }
+            }
+        }
+        result=new String[list.size()];
+        return list.toArray(result);
+    }
+
     public static void main(String[] args) {
 //        System.out.println(checkRecord("LALL"));
 //        System.out.println(optimalDivision(new int[]{100,10,1000,10}));
@@ -300,7 +353,9 @@ public class Easy {
 //        System.out.println(reverseWords("Let's take LeetCode contest   aaa"));
 //        System.out.println(nextGreaterElement(123));
 //        System.out.println(singleNonDuplicate(new int[]{1,1,2}));
-        System.out.println(subarraySum(new int[]{-1, -1, -1}, -1));
+//        System.out.println(subarraySum(new int[]{-1, -1, -1}, -1));
+//        System.out.println(findUnsortedSubarray(new int[]{6,5,4}));
+        System.out.println(Arrays.toString(findRestaurant(new String[]{"Shogun", "Tapioca Express", "Burger King", "KFC"},new String[]{"Tapioca Express", "Shogun", "Burger King"})));
     }
 
 
