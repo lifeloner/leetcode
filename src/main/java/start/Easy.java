@@ -178,45 +178,45 @@ public class Easy {
     }
 
     public static int findTilt(TreeNode root) {
-        int []num=new int[]{0};
-        postOrder(root,num);
+        int[] num = new int[]{0};
+        postOrder(root, num);
         return num[0];
     }
 
-    public static int postOrder(TreeNode node,int[]num){
-        if(node==null){
+    public static int postOrder(TreeNode node, int[] num) {
+        if (node == null) {
             return 0;
         }
-        int left=postOrder(node.left,num),right=postOrder(node.right,num);
-        num[0]+=Math.abs(left-right);
-        return left+right+node.val;
+        int left = postOrder(node.left, num), right = postOrder(node.right, num);
+        num[0] += Math.abs(left - right);
+        return left + right + node.val;
     }
 
     public static int[][] matrixReshape(int[][] nums, int r, int c) {
-        if(nums==null||nums.length==0){
+        if (nums == null || nums.length == 0) {
             return nums;
         }
-        int row=nums.length,column=nums[0].length;
-        if(row*column<r*c){
+        int row = nums.length, column = nums[0].length;
+        if (row * column < r * c) {
             return nums;
         }
-        int [][]result=new int[r][c];
-        int a=0,b=0;
-        for(int i=0;i<r;i++){
-            for(int j=0;j<c;j++){
-                if(b==column){
-                    b=0;
+        int[][] result = new int[r][c];
+        int a = 0, b = 0;
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < c; j++) {
+                if (b == column) {
+                    b = 0;
                     a++;
                 }
-                result[i][j]=nums[a][b++];
+                result[i][j] = nums[a][b++];
             }
         }
         return result;
     }
 
-    public static boolean check(int[]num){
-        for(int i=0;i<num.length;i++){
-            if(num[i]!=0){
+    public static boolean check(int[] num) {
+        for (int i = 0; i < num.length; i++) {
+            if (num[i] != 0) {
                 return false;
             }
         }
@@ -224,25 +224,25 @@ public class Easy {
     }
 
     public static boolean checkInclusion(String s1, String s2) {
-        if(s1==null||s2==null||s2.length()<s1.length()){
+        if (s1 == null || s2 == null || s2.length() < s1.length()) {
             return false;
         }
-        int []count=new int[26];
-        for(int i=0;i<26;i++){
-            count[i]=0;
+        int[] count = new int[26];
+        for (int i = 0; i < 26; i++) {
+            count[i] = 0;
         }
-        for(int i=0;i<s1.length();i++){
-           count[s1.charAt(i)-'a']++;
-           count[s2.charAt(i)-'a']--;
+        for (int i = 0; i < s1.length(); i++) {
+            count[s1.charAt(i) - 'a']++;
+            count[s2.charAt(i) - 'a']--;
         }
-        if(check(count)){
+        if (check(count)) {
             return true;
         }
-        int len= s1.length();
-        for(int i=len;i<s2.length();i++){
-            count[s2.charAt(i-len)-'a']++;
-            count[s2.charAt(i)-'a']--;
-            if(check(count)){
+        int len = s1.length();
+        for (int i = len; i < s2.length(); i++) {
+            count[s2.charAt(i - len) - 'a']++;
+            count[s2.charAt(i) - 'a']--;
+            if (check(count)) {
                 return true;
             }
         }
@@ -250,57 +250,146 @@ public class Easy {
     }
 
     public static int findLHS(int[] nums) {
-        if(nums==null||nums.length==0){
+        if (nums == null || nums.length == 0) {
             return 0;
         }
-        Map<Integer,Integer>count=new HashMap<>();
-        int num,result=0,temp;
-        for(int i:nums){
-            num=count.getOrDefault(i,0);
-            count.put(i,++num);
+        Map<Integer, Integer> count = new HashMap<>();
+        int num, result = 0, temp;
+        for (int i : nums) {
+            num = count.getOrDefault(i, 0);
+            count.put(i, ++num);
         }
-        for(Map.Entry<Integer,Integer>entry:count.entrySet()){
-            if(entry.getKey()!=Integer.MIN_VALUE){
-               temp= count.getOrDefault(entry.getKey()-1,0);
-               if(temp>0&&temp+entry.getValue()>result){
-                   result=temp+entry.getValue();
-               }
+        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+            if (entry.getKey() != Integer.MIN_VALUE) {
+                temp = count.getOrDefault(entry.getKey() - 1, 0);
+                if (temp > 0 && temp + entry.getValue() > result) {
+                    result = temp + entry.getValue();
+                }
             }
         }
         return result;
     }
 
-    public static boolean isSquare(int[]p1,int[]p2,int[]p3){
-        int a=p1[0]-p2[0],b=p1[1]-p2[1],c=p1[0]-p3[0],d=p1[1]-p3[1];
-        return a*c+b*d==0&&a*a+b*b==c*c+d*d&&a*a+b*b!=0?true:false;
+    public static boolean isSquare(int[] p1, int[] p2, int[] p3) {
+        int a = p1[0] - p2[0], b = p1[1] - p2[1], c = p1[0] - p3[0], d = p1[1] - p3[1];
+        return a * c + b * d == 0 && a * a + b * b == c * c + d * d && a * a + b * b != 0 ? true : false;
     }
 
     public static boolean validSquare(int[] p1, int[] p2, int[] p3, int[] p4) {
-        if(isSquare(p1,p3,p4)&&isSquare(p2,p3,p4)&&isSquare(p3,p1,p2)){
+        if (isSquare(p1, p3, p4) && isSquare(p2, p3, p4) && isSquare(p3, p1, p2)) {
             return true;
         }
-        if(isSquare(p1,p2,p4)&&isSquare(p3,p2,p4)&&isSquare(p2,p1,p3)){
+        if (isSquare(p1, p2, p4) && isSquare(p3, p2, p4) && isSquare(p2, p1, p3)) {
             return true;
         }
-        if(isSquare(p1,p2,p3)&&isSquare(p4,p2,p3)&&isSquare(p2,p1,p4)){
+        if (isSquare(p1, p2, p3) && isSquare(p4, p2, p3) && isSquare(p2, p1, p4)) {
             return true;
         }
         return false;
     }
 
     public static int maxCount(int m, int n, int[][] ops) {
-        if(ops==null||ops.length==0){
-            return m*n;
+        if (ops == null || ops.length == 0) {
+            return m * n;
         }
-        for(int i=0;i<ops.length;i++){
-            if(ops[i][0]<m){
-                m=ops[i][0];
+        for (int i = 0; i < ops.length; i++) {
+            if (ops[i][0] < m) {
+                m = ops[i][0];
             }
-            if(ops[i][1]<n){
-                n=ops[i][1];
+            if (ops[i][1] < n) {
+                n = ops[i][1];
             }
         }
-        return m*n;
+        return m * n;
+    }
+
+    public static boolean isSameTree(TreeNode s, TreeNode t) {
+        if (s == null && t == null) {
+            return true;
+        }
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.val != t.val) {
+            return false;
+        }
+        return isSameTree(s.left, t.left) && isSameTree(s.right, t.right);
+    }
+
+    public static boolean isSubtree(TreeNode s, TreeNode t) {
+        if (s == null && t == null) {
+            return true;
+        }
+        if (s == null || t == null) {
+            return false;
+        }
+        if (s.val == t.val && isSameTree(s, t)) {
+            return true;
+        }
+        return isSubtree(s.left, t) || isSubtree(s.right, t);
+    }
+
+    public static int distributeCandies(int[] candies) {
+        if (candies == null || candies.length == 0) {
+            return 0;
+        }
+        Set<Integer> set = new HashSet<>();
+        for (int candy : candies) {
+            set.add(candy);
+        }
+        return Math.min(set.size(), candies.length / 2);
+    }
+
+    public static int findUnsortedSubarray(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        int end = 0, begin = nums.length - 1, max = nums[end], min = nums[begin], len = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            if (max <= nums[i]) {
+                max = nums[i];
+            } else {
+                end = i;
+            }
+            if (min >= nums[len - i]) {
+                min = nums[len - i];
+            } else {
+                begin = len - i;
+            }
+        }
+        if (begin >= end) {
+            return 0;
+        }
+        return end - begin + 1;
+
+    }
+
+    public static String[] findRestaurant(String[] list1, String[] list2) {
+        List<String> list = new ArrayList<>();
+        String[] result;
+        if (list1 == null || list2 == null || list1.length == 0 || list2.length == 0) {
+            result = new String[0];
+            return list.toArray(result);
+        }
+        Map<String, Integer> mapIndex = new HashMap<>();
+        for (int i = 0; i < list1.length; i++) {
+            mapIndex.put(list1[i], i);
+        }
+        int sum = Integer.MAX_VALUE, index;
+        for (int i = 0; i < list2.length; i++) {
+            index = mapIndex.getOrDefault(list2[i], -1);
+            if (index >= 0) {
+                if (index + i == sum) {
+                    list.add(list2[i]);
+                } else if (index + i < sum) {
+                    list.clear();
+                    list.add(list2[i]);
+                    sum = index + i;
+                }
+            }
+        }
+        result = new String[list.size()];
+        return list.toArray(result);
     }
 
     public static void main(String[] args) {
@@ -320,7 +409,9 @@ public class Easy {
 //        System.out.println(subarraySum(new int[]{-1, -1, -1}, -1));
 //        System.out.println(findLHS(new int[]{1,3,2,2,5,2,3,7}));
 //        System.out.println(validSquare(new int[]{0,0},new int[]{1,0},new int[]{1,1},new int[]{0,1}));
-        System.out.println(maxCount(3,3,new int[][]{{1,3},{3,3}}));
+//        System.out.println(maxCount(3, 3, new int[][]{{1, 3}, {3, 3}}));
+//        System.out.println(findUnsortedSubarray(new int[]{6,5,4}));
+//        System.out.println(Arrays.toString(findRestaurant(new String[]{"Shogun", "Tapioca Express", "Burger King", "KFC"}, new String[]{"Tapioca Express", "Shogun", "Burger King"})));
     }
 
 
@@ -328,6 +419,7 @@ public class Easy {
         int val;
         TreeNode left;
         TreeNode right;
+
         TreeNode(int x) {
             val = x;
         }
