@@ -249,6 +249,60 @@ public class Easy {
         return false;
     }
 
+    public static int findLHS(int[] nums) {
+        if(nums==null||nums.length==0){
+            return 0;
+        }
+        Map<Integer,Integer>count=new HashMap<>();
+        int num,result=0,temp;
+        for(int i:nums){
+            num=count.getOrDefault(i,0);
+            count.put(i,++num);
+        }
+        for(Map.Entry<Integer,Integer>entry:count.entrySet()){
+            if(entry.getKey()!=Integer.MIN_VALUE){
+               temp= count.getOrDefault(entry.getKey()-1,0);
+               if(temp>0&&temp+entry.getValue()>result){
+                   result=temp+entry.getValue();
+               }
+            }
+        }
+        return result;
+    }
+
+    public static boolean isSquare(int[]p1,int[]p2,int[]p3){
+        int a=p1[0]-p2[0],b=p1[1]-p2[1],c=p1[0]-p3[0],d=p1[1]-p3[1];
+        return a*c+b*d==0&&a*a+b*b==c*c+d*d&&a*a+b*b!=0?true:false;
+    }
+
+    public static boolean validSquare(int[] p1, int[] p2, int[] p3, int[] p4) {
+        if(isSquare(p1,p3,p4)&&isSquare(p2,p3,p4)&&isSquare(p3,p1,p2)){
+            return true;
+        }
+        if(isSquare(p1,p2,p4)&&isSquare(p3,p2,p4)&&isSquare(p2,p1,p3)){
+            return true;
+        }
+        if(isSquare(p1,p2,p3)&&isSquare(p4,p2,p3)&&isSquare(p2,p1,p4)){
+            return true;
+        }
+        return false;
+    }
+
+    public static int maxCount(int m, int n, int[][] ops) {
+        if(ops==null||ops.length==0){
+            return m*n;
+        }
+        for(int i=0;i<ops.length;i++){
+            if(ops[i][0]<m){
+                m=ops[i][0];
+            }
+            if(ops[i][1]<n){
+                n=ops[i][1];
+            }
+        }
+        return m*n;
+    }
+
     public static void main(String[] args) {
 //        System.out.println(checkRecord("LALL"));
 //        System.out.println(optimalDivision(new int[]{100,10,1000,10}));
@@ -263,7 +317,10 @@ public class Easy {
 //        System.out.println(reverseWords("Let's take LeetCode contest   aaa"));
 //        System.out.println(nextGreaterElement(123));
 //        System.out.println(singleNonDuplicate(new int[]{1,1,2}));
-        System.out.println(subarraySum(new int[]{-1, -1, -1}, -1));
+//        System.out.println(subarraySum(new int[]{-1, -1, -1}, -1));
+//        System.out.println(findLHS(new int[]{1,3,2,2,5,2,3,7}));
+//        System.out.println(validSquare(new int[]{0,0},new int[]{1,0},new int[]{1,1},new int[]{0,1}));
+        System.out.println(maxCount(3,3,new int[][]{{1,3},{3,3}}));
     }
 
 
