@@ -392,6 +392,163 @@ public class Easy {
         return list.toArray(result);
     }
 
+    public static int findMaxDivisor(int a, int b) {
+        int c;
+        while (b != 0) {
+            c = a % b;
+            a = b;
+            b = c;
+        }
+        return a;
+    }
+
+    public static void plus(int[] result, boolean flag) {
+        if (result[2] != 0) {
+            if (result[0] == 0) {
+                if (!flag) {
+                    result[2] *= -1;
+                }
+                result[0] = result[2];
+                result[1] = result[3];
+            } else {
+                int divisor;
+                divisor = findMaxDivisor(result[1], result[3]);
+                if (flag) {
+                    result[0] = result[0] * result[3] / divisor + result[2] * result[1] / divisor;
+                    result[1] = result[3] / divisor * result[1];
+                } else {
+                    result[0] = result[0] * result[3] / divisor - result[2] * result[1] / divisor;
+                    result[1] = result[1] / divisor * result[3];
+                }
+            }
+        }
+        result[2] = 0;
+        result[3] = 0;
+    }
+
+    public static String fractionAddition(String expression) {
+        if (expression == null || expression.length() == 0) {
+            return "0/1";
+        }
+        boolean flag = true, isDenominator = false;
+        char ch;
+        int[] result = new int[]{0, 0, 0, 0};
+        for (int i = 0; i < expression.length(); i++) {
+            ch = expression.charAt(i);
+            if (ch >= '0' && ch <= '9') {
+                if (isDenominator) {
+                    result[3] = result[3] * 10 + ch - '0';
+                } else {
+                    result[2] = result[2] * 10 + ch - '0';
+                }
+            } else if (ch == '/') {
+                isDenominator = true;
+            } else {
+                isDenominator = false;
+                plus(result, flag);
+                if (ch == '-') {
+                    flag = false;
+                } else {
+                    flag = true;
+                }
+            }
+        }
+        plus(result, flag);
+        if (result[0] == 0) {
+            return "0/1";
+        }
+        flag = true;
+        if (result[0] < 0) {
+            flag = false;
+            result[0] *= -1;
+        }
+        result[2] = findMaxDivisor(result[0], result[1]);
+        if (!flag) {
+            result[0] *= -1;
+        }
+        return result[0] / result[2] + "/" + result[1] / result[2];
+    }
+
+    public static void preOrder(TreeNode t, StringBuilder builder) {
+        if (t == null) {
+            builder.append("()");
+            return;
+        }
+        builder.append("(");
+        builder.append(t.val);
+        if (t.left == null && t.right == null) {
+            builder.append(")");
+            return;
+        }
+        preOrder(t.left, builder);
+        if (t.right != null) {
+            preOrder(t.right, builder);
+        }
+        builder.append(")");
+    }
+
+    public static String tree2str(TreeNode t) {
+        if (t == null) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        builder.append(t.val);
+        if (t.left == null && t.right == null) {
+            return builder.toString();
+        }
+        preOrder(t.left, builder);
+        if (t.right != null) {
+            preOrder(t.right, builder);
+        }
+        return builder.toString();
+    }
+
+    public static List<List<String>> findDuplicate(String[] paths) {
+        if (paths == null || paths.length == 0) {
+            return new ArrayList<>();
+        }
+        Map<String, List<String>> map = new HashMap<>();
+        String[] temp;
+        String first, second;
+        char ch;
+        int k;
+        for (String string : paths) {
+            temp = string.split(" ");
+            for (int i = 1; i < temp.length; i++) {
+                StringBuilder builder = new StringBuilder();
+                builder.append(temp[0]);
+                builder.append("/");
+                first = null;
+                second = null;
+                for (int j = 0; j < temp[i].length(); j++) {
+                    ch = temp[i].charAt(j);
+                    if (ch == '(') {
+                        first = builder.toString();
+                        builder = new StringBuilder();
+                    } else if (ch == ')') {
+                        second = builder.toString();
+                    } else {
+                        builder.append(ch);
+                    }
+                }
+                if (map.containsKey(second)) {
+                    map.get(second).add(first);
+                } else {
+                    List<String> list = new ArrayList<>();
+                    list.add(first);
+                    map.put(second, list);
+                }
+            }
+        }
+        List<List<String>> result = new ArrayList<>(map.size());
+        for(String str:map.keySet()){
+            if(map.get(str).size()>1) {
+                result.add(map.get(str));
+            }
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
 //        System.out.println(checkRecord("LALL"));
 //        System.out.println(optimalDivision(new int[]{100,10,1000,10}));
@@ -412,6 +569,17 @@ public class Easy {
 //        System.out.println(maxCount(3, 3, new int[][]{{1, 3}, {3, 3}}));
 //        System.out.println(findUnsortedSubarray(new int[]{6,5,4}));
 //        System.out.println(Arrays.toString(findRestaurant(new String[]{"Shogun", "Tapioca Express", "Burger King", "KFC"}, new String[]{"Tapioca Express", "Shogun", "Burger King"})));
+//        System.out.println(findMaxDivisor(8,12));
+//        System.out.println(fractionAddition("-5/2+10/3+7/9"));
+//        TreeNode one = new TreeNode(1);
+//        TreeNode two = new TreeNode(2);
+//        TreeNode three = new TreeNode(3);
+//        TreeNode four = new TreeNode(4);
+//        one.left = two;
+//        one.right = three;
+//        two.right = four;
+//        System.out.println(tree2str(one));
+        System.out.println(findDuplicate(new String[]{"root/a 1.txt(abcd) 2.txt(efsfgh) 3.txt(efsfgh)","root/c 3.txt(abdfcd)","root/c/d 4.txt(efggdfh)"}));
     }
 
 
