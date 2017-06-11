@@ -269,6 +269,35 @@ public class Medium {
         return len1+len2-2*array[len1][len2];
     }
 
+    public static int triangleNumber(int[] nums) {
+        if(nums==null||nums.length<3){
+            return 0;
+        }
+        Arrays.sort(nums);
+        int count=0,m=0,n=0;
+        for(int i=0;i<nums.length-2;i++){
+            m=Math.max(m,i+2);
+            n=m;
+            for(int j=i+1;j<nums.length-1;j++){
+                n=Math.max(n,j+1);
+                for(int k=n;k<nums.length;k++){
+                    if(nums[i]+nums[j]>nums[k]){
+                        n=k;
+                    }else {
+                        break;
+                    }
+                }
+                if(n>j&&nums[i]+nums[j]>nums[n]){
+                    count+=n-j;
+                    if(j==i+1){
+                        m=n;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
     public static void main(String[] args) {
 //        System.out.println(findCircleNums(new int[][]{{1,1,0},{1,1,1},{0,1,1}}));
 //        System.out.println(findMinDifference(new ArrayList<String>(){{add("00:01");
@@ -276,7 +305,8 @@ public class Medium {
 //        }}));
 //        System.out.println(complexNumberMultiply("1+-1i", "1+-1i"));
 //        System.out.println(killProcess(Arrays.asList(1,3,10,5),Arrays.asList(3,0,5,3),3));
-        System.out.println(minDistance("ac","ab"));
+//        System.out.println(minDistance("ac","ab"));
+        System.out.println(triangleNumber(new int[]{1,1,3,4}));
     }
 
     public class TreeNode {
