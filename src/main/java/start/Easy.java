@@ -549,6 +549,64 @@ public class Easy {
         return result;
     }
 
+    public static boolean canPlaceFlowers(int[] flowerbed, int n) {
+        if(n==0){
+            return true;
+        }
+        if(flowerbed==null||flowerbed.length/2+1<n){
+            return false;
+        }
+        int count=0,k=0;
+        while(k<flowerbed.length){
+            if(flowerbed[k]==0){
+                if(k-1>=0&&flowerbed[k-1]==1){
+                    k++;
+                    continue;
+                }
+                if(k+1<flowerbed.length&&flowerbed[k+1]==1){
+                    k++;
+                    continue;
+                }
+                count++;
+                if(count==n){
+                    return true;
+                }
+                flowerbed[k]=1;
+                k++;
+            }
+            k++;
+        }
+        return false;
+    }
+
+
+    public static void mergeTreeNode(TreeNode t1,TreeNode t2){
+        t1.val+=t2.val;
+        if(t1.left==null){
+            t1.left=t2.left;
+        }
+        else if(t1.left!=null&&t2.left!=null){
+            mergeTreeNode(t1.left,t2.left);
+        }
+        if(t1.right==null){
+            t1.right=t2.right;
+        }
+        else if(t1.right!=null&&t2.right!=null){
+            mergeTreeNode(t1.right,t2.right);
+        }
+    }
+
+    public static TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if(t1==null){
+            return t2;
+        }
+        if(t2==null){
+            return t1;
+        }
+        mergeTreeNode(t1,t2);
+        return t1;
+    }
+
     public static void main(String[] args) {
 //        System.out.println(checkRecord("LALL"));
 //        System.out.println(optimalDivision(new int[]{100,10,1000,10}));
@@ -579,7 +637,8 @@ public class Easy {
 //        one.right = three;
 //        two.right = four;
 //        System.out.println(tree2str(one));
-        System.out.println(findDuplicate(new String[]{"root/a 1.txt(abcd) 2.txt(efsfgh) 3.txt(efsfgh)","root/c 3.txt(abdfcd)","root/c/d 4.txt(efggdfh)"}));
+//        System.out.println(findDuplicate(new String[]{"root/a 1.txt(abcd) 2.txt(efsfgh) 3.txt(efsfgh)","root/c 3.txt(abdfcd)","root/c/d 4.txt(efggdfh)"}));
+        System.out.println(canPlaceFlowers(new int[]{1,0,0,0,0,0,0,0,1},3));
     }
 
 
