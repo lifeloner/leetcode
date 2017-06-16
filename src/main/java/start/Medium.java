@@ -298,6 +298,32 @@ public class Medium {
         return count;
     }
 
+    public static int arrayNesting(int[] nums) {
+        if(nums==null||nums.length==0){
+            return 0;
+        }
+        int max=0,k,count;
+        boolean []state=new boolean[nums.length];
+        for(int i=0;i<nums.length;i++){
+            if(state[i]==true){
+                continue;
+            }
+            k=i;
+            state[k]=true;
+            k=nums[k];
+            count=1;
+            while(state[k]==false){
+                count++;
+                state[k]=true;
+                k=nums[k];
+            }
+            if(count>max){
+                max=count;
+            }
+        }
+        return max;
+    }
+
     public static void main(String[] args) {
 //        System.out.println(findCircleNums(new int[][]{{1,1,0},{1,1,1},{0,1,1}}));
 //        System.out.println(findMinDifference(new ArrayList<String>(){{add("00:01");
@@ -306,7 +332,8 @@ public class Medium {
 //        System.out.println(complexNumberMultiply("1+-1i", "1+-1i"));
 //        System.out.println(killProcess(Arrays.asList(1,3,10,5),Arrays.asList(3,0,5,3),3));
 //        System.out.println(minDistance("ac","ab"));
-        System.out.println(triangleNumber(new int[]{1,1,3,4}));
+//        System.out.println(triangleNumber(new int[]{1,1,3,4}));
+        System.out.println(arrayNesting(new int[]{5,4,0,3,1,6,2}));
     }
 
     public class TreeNode {
