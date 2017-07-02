@@ -324,6 +324,34 @@ public class Medium {
         return max;
     }
 
+    public static int scheduleCourse(int[][] courses) {
+        if(courses==null||courses.length<=1){
+            return courses.length;
+        }
+        Arrays.sort(courses, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[1]-o2[1];
+            }
+        });
+        Queue<Integer>queue=new PriorityQueue(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2-o1;
+            }
+        });
+        int sum=0;
+        for(int[]num:courses){
+            sum+=num[0];
+            queue.add(num[0]);
+            if(sum>num[1]){
+                sum-=queue.peek();
+                queue.poll();
+            }
+        }
+        return queue.size();
+    }
+
     public static void main(String[] args) {
 //        System.out.println(findCircleNums(new int[][]{{1,1,0},{1,1,1},{0,1,1}}));
 //        System.out.println(findMinDifference(new ArrayList<String>(){{add("00:01");
@@ -333,7 +361,8 @@ public class Medium {
 //        System.out.println(killProcess(Arrays.asList(1,3,10,5),Arrays.asList(3,0,5,3),3));
 //        System.out.println(minDistance("ac","ab"));
 //        System.out.println(triangleNumber(new int[]{1,1,3,4}));
-        System.out.println(arrayNesting(new int[]{5,4,0,3,1,6,2}));
+//        System.out.println(arrayNesting(new int[]{5,4,0,3,1,6,2}));
+        System.out.println(scheduleCourse(new int[][]{{5,5},{4,6},{2,6}}));
     }
 
     public class TreeNode {

@@ -622,7 +622,7 @@ public class Easy {
                 break;
             }
         }
-        int result = 0, k = 0,t=0;
+        int result = 0, k = 0, t = 0;
         while (!queue.isEmpty()) {
             while (!queue.isEmpty()) {
                 count[k] = queue.poll();
@@ -632,19 +632,173 @@ public class Easy {
                     break;
                 }
             }
-            result += 1+n;
-            t=k;
+            result += 1 + n;
+            t = k;
             while (k > 0) {
-                if(count[k-1]>0) {
-                    queue.add(count[k-1]);
+                if (count[k - 1] > 0) {
+                    queue.add(count[k - 1]);
                 }
                 k--;
             }
         }
-        if(t<1+n){
-            result-=1+n-t;
+        if (t < 1 + n) {
+            result -= 1 + n - t;
         }
         return result;
+    }
+
+    public static TreeNode addOneRow(TreeNode root, int v, int d) {
+        if (d <= 0) {
+            return root;
+        }
+        if (d == 1) {
+            TreeNode node = new TreeNode(v);
+            node.left = root;
+            return node;
+        }
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        int dept = 2;
+        queue.add(root);
+        TreeNode temp, left, right;
+        int size;
+        while (dept < d && !queue.isEmpty()) {
+            size = queue.size();
+            while (size-- > 0) {
+                temp = queue.poll();
+                if (temp.left != null) {
+                    queue.add(temp.left);
+                }
+                if (temp.right != null) {
+                    queue.add(temp.right);
+                }
+            }
+            dept++;
+        }
+        while (!queue.isEmpty()) {
+            temp = queue.poll();
+            left = temp.left;
+            right = temp.right;
+            temp.left = new TreeNode(v);
+            temp.right = new TreeNode(v);
+            temp.left.left = left;
+            temp.right.right = right;
+        }
+        return root;
+    }
+
+    public static int maxDistance(List<List<Integer>> arrays) {
+        if (arrays == null || arrays.size() <= 1) {
+            return 0;
+        }
+        int min = arrays.get(0).get(0), max = arrays.get(0).get(arrays.get(0).size() - 1), result = 0, a, b;
+        List<Integer> array;
+        for (int i = 1; i < arrays.size(); i++) {
+            array = arrays.get(i);
+            if (array != null && array.size() != 0) {
+                a = array.get(0);
+                b = array.get(array.size() - 1);
+                if (max - a > result) {
+                    result = max - a;
+                }
+                if (b - min > result) {
+                    result = b - min;
+                }
+                if (b > max) {
+                    max = b;
+                }
+                if (a < min) {
+                    min = a;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static int smallestFactorization(int a) {
+        if (a <= 1) {
+            return a;
+        }
+        int[] count = new int[11];
+        while (a % 2 == 0) {
+            count[2]++;
+            a /= 2;
+        }
+        while (a % 3 == 0) {
+            count[3]++;
+            a /= 3;
+        }
+        while (a % 5 == 0) {
+            count[5]++;
+            a /= 5;
+        }
+        while (a % 7 == 0) {
+            count[7]++;
+            a /= 7;
+        }
+        if (a != 1) {
+            return 0;
+        }
+        count[9] = count[3] / 2;
+        count[3] = count[3] % 2;
+        count[8] = count[2] / 3;
+        count[2] = count[2] % 3;
+        if(count[3]>0&&count[2]>0){
+            count[6]=1;
+            count[3]=0;
+            count[2]--;
+        }
+        if(count[2]==2){
+            count[4]=1;
+            count[2]=0;
+        }
+        StringBuilder builder=new StringBuilder();
+        for(int i=0;i<11;i++){
+            for(int j=0;j<count[i];j++){
+                builder.append(i);
+            }
+        }
+        String result=builder.toString();
+        String max=String.valueOf(Integer.MAX_VALUE);
+        if(result.length()>max.length()){
+            return 0;
+        }
+        if(result.length()==max.length()) {
+            for (int i=0;i<max.length();i++){
+                if(result.charAt(i)>max.charAt(i)){
+                    return 0;
+                }
+                else if(result.charAt(i)<max.charAt(i)){
+                    break;
+                }
+            }
+        }
+        return Integer.parseInt(result);
+    }
+
+    public static int maximumProduct(int[] nums) {
+        if(nums==null||nums.length<3){
+            return 0;
+        }
+        int a=Integer.MIN_VALUE,b=a,c=a,d=Integer.MAX_VALUE,e=d;
+        for(int n:nums){
+            if(n>a){
+                c=b;
+                b=a;
+                a=n;
+            }else if(n>b){
+                c=b;
+                b=n;
+            }else  if(n>c){
+                c=n;
+            }
+            if(n<d){
+                e=d;
+                d=n;
+            }else if(n<e){
+                e=n;
+            }
+        }
+        return Math.max(a*b*c,d*e*a);
     }
 
     public static void main(String[] args) {
@@ -670,18 +824,26 @@ public class Easy {
 //        System.out.println(Arrays.toString(findRestaurant(new String[]{"Shogun", "Tapioca Express", "Burger King", "KFC"}, new String[]{"Tapioca Express", "Shogun", "Burger King"})));
 //        System.out.println(findMaxDivisor(8,12));
 //        System.out.println(fractionAddition("-5/2+10/3+7/9"));
-//        TreeNode one = new TreeNode(1);
+//        TreeNode one = new TreeNode(4);
 //        TreeNode two = new TreeNode(2);
 //        TreeNode three = new TreeNode(3);
-//        TreeNode four = new TreeNode(4);
+//        TreeNode four = new TreeNode(1);
 //        one.left = two;
-//        one.right = three;
+//        two.left = three;
 //        two.right = four;
 //        System.out.println(tree2str(one));
 //        System.out.println(findDuplicate(new String[]{"root/a 1.txt(abcd) 2.txt(efsfgh) 3.txt(efsfgh)","root/c 3.txt(abdfcd)","root/c/d 4.txt(efggdfh)"}));
 //        System.out.println(canPlaceFlowers(new int[]{1, 0, 0, 0, 0, 0, 0, 0, 1}, 3));
-        System.out.println(leastInterval(new char[]{
-                'A', 'A', 'A', 'B', 'B', 'C'}, 2));
+//        System.out.println(leastInterval(new char[]{
+//                'A', 'A', 'A', 'B', 'B', 'C'}, 2));
+//        addOneRow(one, 1, 3);
+//        List<List<Integer>> result = new ArrayList<>();
+//        result.add(Arrays.asList(1, 2, 3, 6));
+//        result.add(Arrays.asList(4, 5));
+//        result.add(Arrays.asList(1, 2, 3));
+//        System.out.println(maxDistance(result));
+//        System.out.println(smallestFactorization(77));
+        System.out.println(maximumProduct(new int[]{1,2,3}));
     }
 
 
