@@ -352,6 +352,26 @@ public class Medium {
         return queue.size();
     }
 
+    public static boolean judgeSquareSum(int c) {
+        if(c<0){
+            return false;
+        }
+        if(c<=2){
+            return true;
+        }
+        int max=(int)Math.sqrt(1.0*Integer.MAX_VALUE);
+        Set<Integer>nums=new HashSet<>();
+        for(int i=0;i*i<=c&&i<=max;i++){
+            nums.add(i*i);
+        }
+        for(int num:nums){
+            if(nums.contains(c-num)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
 //        System.out.println(findCircleNums(new int[][]{{1,1,0},{1,1,1},{0,1,1}}));
 //        System.out.println(findMinDifference(new ArrayList<String>(){{add("00:01");
@@ -362,7 +382,8 @@ public class Medium {
 //        System.out.println(minDistance("ac","ab"));
 //        System.out.println(triangleNumber(new int[]{1,1,3,4}));
 //        System.out.println(arrayNesting(new int[]{5,4,0,3,1,6,2}));
-        System.out.println(scheduleCourse(new int[][]{{5,5},{4,6},{2,6}}));
+//        System.out.println(scheduleCourse(new int[][]{{5,5},{4,6},{2,6}}));
+        System.out.println(judgeSquareSum(2038480973));
     }
 
     public class TreeNode {
