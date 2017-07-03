@@ -269,6 +269,89 @@ public class Medium {
         return len1+len2-2*array[len1][len2];
     }
 
+    public static int triangleNumber(int[] nums) {
+        if(nums==null||nums.length<3){
+            return 0;
+        }
+        Arrays.sort(nums);
+        int count=0,m=0,n=0;
+        for(int i=0;i<nums.length-2;i++){
+            m=Math.max(m,i+2);
+            n=m;
+            for(int j=i+1;j<nums.length-1;j++){
+                n=Math.max(n,j+1);
+                for(int k=n;k<nums.length;k++){
+                    if(nums[i]+nums[j]>nums[k]){
+                        n=k;
+                    }else {
+                        break;
+                    }
+                }
+                if(n>j&&nums[i]+nums[j]>nums[n]){
+                    count+=n-j;
+                    if(j==i+1){
+                        m=n;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
+    public static int arrayNesting(int[] nums) {
+        if(nums==null||nums.length==0){
+            return 0;
+        }
+        int max=0,k,count;
+        boolean []state=new boolean[nums.length];
+        for(int i=0;i<nums.length;i++){
+            if(state[i]==true){
+                continue;
+            }
+            k=i;
+            state[k]=true;
+            k=nums[k];
+            count=1;
+            while(state[k]==false){
+                count++;
+                state[k]=true;
+                k=nums[k];
+            }
+            if(count>max){
+                max=count;
+            }
+        }
+        return max;
+    }
+
+    public static int scheduleCourse(int[][] courses) {
+        if(courses==null||courses.length<=1){
+            return courses.length;
+        }
+        Arrays.sort(courses, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[1]-o2[1];
+            }
+        });
+        Queue<Integer>queue=new PriorityQueue(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2-o1;
+            }
+        });
+        int sum=0;
+        for(int[]num:courses){
+            sum+=num[0];
+            queue.add(num[0]);
+            if(sum>num[1]){
+                sum-=queue.peek();
+                queue.poll();
+            }
+        }
+        return queue.size();
+    }
+
     public static void main(String[] args) {
 //        System.out.println(findCircleNums(new int[][]{{1,1,0},{1,1,1},{0,1,1}}));
 //        System.out.println(findMinDifference(new ArrayList<String>(){{add("00:01");
@@ -276,7 +359,10 @@ public class Medium {
 //        }}));
 //        System.out.println(complexNumberMultiply("1+-1i", "1+-1i"));
 //        System.out.println(killProcess(Arrays.asList(1,3,10,5),Arrays.asList(3,0,5,3),3));
-        System.out.println(minDistance("ac","ab"));
+//        System.out.println(minDistance("ac","ab"));
+//        System.out.println(triangleNumber(new int[]{1,1,3,4}));
+//        System.out.println(arrayNesting(new int[]{5,4,0,3,1,6,2}));
+        System.out.println(scheduleCourse(new int[][]{{5,5},{4,6},{2,6}}));
     }
 
     public class TreeNode {
