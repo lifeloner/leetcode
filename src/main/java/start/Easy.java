@@ -801,6 +801,27 @@ public class Easy {
         return Math.max(a*b*c,d*e*a);
     }
 
+    public static int findDerangement(int n) {
+        if(n==1){
+            return 0;
+        }
+        if(n==2){
+            return 1;
+        }
+        int a=1,b=0,c,d;
+        for(int i=2;i<=n;i++){
+            System.out.println(i-1+" "+(a+b));
+            c=0;
+            for(int j=0;j<i-1;j++){
+                c=(c+a+b)%1000000007;
+            }
+//            c=(i-1)*(a+b)%1000000007;
+            a=b;
+            b=c;
+        }
+        return b;
+    }
+
     public static void main(String[] args) {
 //        System.out.println("hello,world!");
 //        System.out.println(checkRecord("LALL"));
@@ -843,9 +864,9 @@ public class Easy {
 //        result.add(Arrays.asList(1, 2, 3));
 //        System.out.println(maxDistance(result));
 //        System.out.println(smallestFactorization(77));
-        System.out.println(maximumProduct(new int[]{1,2,3}));
+//        System.out.println(maximumProduct(new int[]{1,2,3}));
+        System.out.println(findDerangement(14));
     }
-
 
     private static class TreeNode {
         int val;
