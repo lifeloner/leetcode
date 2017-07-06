@@ -822,6 +822,49 @@ public class Easy {
         return b;
     }
 
+    public static int[] smallestRange(List<List<Integer>> nums) {
+        if(nums==null||nums.size()==0){
+            return null;
+        }
+        int []result=new int[]{-100000,100000};
+        int [][]index=new int[nums.size()][3];
+        Queue<int[]>queue=new PriorityQueue<>(new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[2]-o2[2];
+            }
+        });
+        int min,max=Integer.MIN_VALUE;
+        for(int i=0;i<nums.size();i++){
+            index[i][0]=i;
+            index[i][1]=0;
+            index[i][2]=nums.get(i).get(0);
+            queue.add(index[i]);
+            if(index[i][2]>max){
+                max=index[i][2];
+            }
+        }
+        int[]num;
+        while(true){
+            num=queue.poll();
+            min=num[2];
+            if(max-min<result[1]-result[0]){
+                result[0]=min;
+                result[1]=max;
+            }
+            num[1]++;
+            if(num[1]==nums.get(num[0]).size()){
+                break;
+            }
+            num[2]=nums.get(num[0]).get(num[1]);
+            if(max<num[2]){
+                max=num[2];
+            }
+            queue.add(num);
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
 //        System.out.println("hello,world!");
 //        System.out.println(checkRecord("LALL"));
@@ -830,7 +873,6 @@ public class Easy {
 //            add(Arrays.asList(1,2,2,1));
 //            add(Arrays.asList(3, 1, 2));
 //            add(Arrays.asList(1, 3, 2));
-//            add(Arrays.asList(2, 4));
 //            add(Arrays.asList(3, 1, 2));
 //            add(Arrays.asList(1, 3, 1, 1));
 //        }}));
@@ -858,14 +900,15 @@ public class Easy {
 //        System.out.println(leastInterval(new char[]{
 //                'A', 'A', 'A', 'B', 'B', 'C'}, 2));
 //        addOneRow(one, 1, 3);
-//        List<List<Integer>> result = new ArrayList<>();
-//        result.add(Arrays.asList(1, 2, 3, 6));
-//        result.add(Arrays.asList(4, 5));
-//        result.add(Arrays.asList(1, 2, 3));
+        List<List<Integer>> result = new ArrayList<>();
+        result.add(Arrays.asList(4,10,15,24,26));
+        result.add(Arrays.asList(1,9,12,20));
+        result.add(Arrays.asList(5,18,22,30));
 //        System.out.println(maxDistance(result));
 //        System.out.println(smallestFactorization(77));
 //        System.out.println(maximumProduct(new int[]{1,2,3}));
-        System.out.println(findDerangement(14));
+//        System.out.println(findDerangement(14));
+        System.out.println(Arrays.toString(smallestRange(result)));
     }
 
     private static class TreeNode {
