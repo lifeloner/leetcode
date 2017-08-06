@@ -238,9 +238,9 @@ public class Medium {
         while (!queue.isEmpty()) {
             kill = queue.poll();
             result.add(kill);
-            child=map.getOrDefault(kill,null);
-            if(child!=null) {
-                for (int k:child){
+            child = map.getOrDefault(kill, null);
+            if (child != null) {
+                for (int k : child) {
                     queue.add(k);
                 }
             }
@@ -249,48 +249,48 @@ public class Medium {
     }
 
     public static int minDistance(String word1, String word2) {
-        if(word1==null||word2==null){
+        if (word1 == null || word2 == null) {
             return -1;
         }
-        int len1=word1.length(),len2=word2.length();
-        if(len1==0||len2==0){
-            return word1.length()+word2.length();
+        int len1 = word1.length(), len2 = word2.length();
+        if (len1 == 0 || len2 == 0) {
+            return word1.length() + word2.length();
         }
-        int [][]array=new int[len1+1][len2+1];
-        for(int i=1;i<=len1;i++){
-            for (int j=1;j<=len2;j++){
-                if(word1.charAt(i-1)==word2.charAt(j-1)) {
-                    array[i][j] = array[i-1][j-1]+1;
-                }else {
-                    array[i][j]=Math.max(array[i-1][j],array[i][j-1]);
+        int[][] array = new int[len1 + 1][len2 + 1];
+        for (int i = 1; i <= len1; i++) {
+            for (int j = 1; j <= len2; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    array[i][j] = array[i - 1][j - 1] + 1;
+                } else {
+                    array[i][j] = Math.max(array[i - 1][j], array[i][j - 1]);
                 }
             }
         }
-        return len1+len2-2*array[len1][len2];
+        return len1 + len2 - 2 * array[len1][len2];
     }
 
     public static int triangleNumber(int[] nums) {
-        if(nums==null||nums.length<3){
+        if (nums == null || nums.length < 3) {
             return 0;
         }
         Arrays.sort(nums);
-        int count=0,m=0,n=0;
-        for(int i=0;i<nums.length-2;i++){
-            m=Math.max(m,i+2);
-            n=m;
-            for(int j=i+1;j<nums.length-1;j++){
-                n=Math.max(n,j+1);
-                for(int k=n;k<nums.length;k++){
-                    if(nums[i]+nums[j]>nums[k]){
-                        n=k;
-                    }else {
+        int count = 0, m = 0, n = 0;
+        for (int i = 0; i < nums.length - 2; i++) {
+            m = Math.max(m, i + 2);
+            n = m;
+            for (int j = i + 1; j < nums.length - 1; j++) {
+                n = Math.max(n, j + 1);
+                for (int k = n; k < nums.length; k++) {
+                    if (nums[i] + nums[j] > nums[k]) {
+                        n = k;
+                    } else {
                         break;
                     }
                 }
-                if(n>j&&nums[i]+nums[j]>nums[n]){
-                    count+=n-j;
-                    if(j==i+1){
-                        m=n;
+                if (n > j && nums[i] + nums[j] > nums[n]) {
+                    count += n - j;
+                    if (j == i + 1) {
+                        m = n;
                     }
                 }
             }
@@ -299,53 +299,53 @@ public class Medium {
     }
 
     public static int arrayNesting(int[] nums) {
-        if(nums==null||nums.length==0){
+        if (nums == null || nums.length == 0) {
             return 0;
         }
-        int max=0,k,count;
-        boolean []state=new boolean[nums.length];
-        for(int i=0;i<nums.length;i++){
-            if(state[i]==true){
+        int max = 0, k, count;
+        boolean[] state = new boolean[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            if (state[i] == true) {
                 continue;
             }
-            k=i;
-            state[k]=true;
-            k=nums[k];
-            count=1;
-            while(state[k]==false){
+            k = i;
+            state[k] = true;
+            k = nums[k];
+            count = 1;
+            while (state[k] == false) {
                 count++;
-                state[k]=true;
-                k=nums[k];
+                state[k] = true;
+                k = nums[k];
             }
-            if(count>max){
-                max=count;
+            if (count > max) {
+                max = count;
             }
         }
         return max;
     }
 
     public static int scheduleCourse(int[][] courses) {
-        if(courses==null||courses.length<=1){
+        if (courses == null || courses.length <= 1) {
             return courses.length;
         }
         Arrays.sort(courses, new Comparator<int[]>() {
             @Override
             public int compare(int[] o1, int[] o2) {
-                return o1[1]-o2[1];
+                return o1[1] - o2[1];
             }
         });
-        Queue<Integer>queue=new PriorityQueue(new Comparator<Integer>() {
+        Queue<Integer> queue = new PriorityQueue(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
-                return o2-o1;
+                return o2 - o1;
             }
         });
-        int sum=0;
-        for(int[]num:courses){
-            sum+=num[0];
+        int sum = 0;
+        for (int[] num : courses) {
+            sum += num[0];
             queue.add(num[0]);
-            if(sum>num[1]){
-                sum-=queue.peek();
+            if (sum > num[1]) {
+                sum -= queue.peek();
                 queue.poll();
             }
         }
@@ -353,23 +353,60 @@ public class Medium {
     }
 
     public static boolean judgeSquareSum(int c) {
-        if(c<0){
+        if (c < 0) {
             return false;
         }
-        if(c<=2){
+        if (c <= 2) {
             return true;
         }
-        int max=(int)Math.sqrt(1.0*Integer.MAX_VALUE);
-        Set<Integer>nums=new HashSet<>();
-        for(int i=0;i*i<=c&&i<=max;i++){
-            nums.add(i*i);
+        int max = (int) Math.sqrt(1.0 * Integer.MAX_VALUE);
+        Set<Integer> nums = new HashSet<>();
+        for (int i = 0; i * i <= c && i <= max; i++) {
+            nums.add(i * i);
         }
-        for(int num:nums){
-            if(nums.contains(c-num)){
+        for (int num : nums) {
+            if (nums.contains(c - num)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static int[] exclusiveTime(int n, List<String> logs) {
+        int[] result = new int[n];
+        if (n == 0) {
+            return result;
+        }
+        Stack<int[]> stack = new Stack<>();
+        String[] string;
+        int time, id, k;
+        for (String log : logs) {
+            string = log.split(":");
+            id = Integer.parseInt(string[0]);
+            time = Integer.parseInt(string[2]);
+            if (string[1].equals("start")) {
+                int[] num = new int[2];
+                num[0] = 0;
+                num[1] = time;
+                stack.push(num);
+            } else {
+                int[]num=new int[2];
+                k=0;
+                while(!stack.empty()){
+                    num=stack.pop();
+                    if(num[0]==0){
+                        result[id]+=time-k-num[1]+1;
+                        k=num[1];
+                        break;
+                    }
+                    k+=num[1];
+                }
+                num[0]=1;
+                num[1]=time-k+1;
+                stack.push(num);
+            }
+        }
+        return result;
     }
 
     public static void main(String[] args) {
@@ -383,7 +420,13 @@ public class Medium {
 //        System.out.println(triangleNumber(new int[]{1,1,3,4}));
 //        System.out.println(arrayNesting(new int[]{5,4,0,3,1,6,2}));
 //        System.out.println(scheduleCourse(new int[][]{{5,5},{4,6},{2,6}}));
-        System.out.println(judgeSquareSum(2038480973));
+//        System.out.println(judgeSquareSum(2038480973));
+        List<String>logs=new ArrayList<>();
+        logs.add("0:start:0");
+        logs.add("0:start:2");
+        logs.add("0:end:5");
+        logs.add("0:end:10");
+        System.out.println(Arrays.toString(exclusiveTime(1,logs)));
     }
 
     public class TreeNode {
