@@ -541,8 +541,8 @@ public class Easy {
             }
         }
         List<List<String>> result = new ArrayList<>(map.size());
-        for(String str:map.keySet()){
-            if(map.get(str).size()>1) {
+        for (String str : map.keySet()) {
+            if (map.get(str).size() > 1) {
                 result.add(map.get(str));
             }
         }
@@ -550,28 +550,28 @@ public class Easy {
     }
 
     public static boolean canPlaceFlowers(int[] flowerbed, int n) {
-        if(n==0){
+        if (n == 0) {
             return true;
         }
-        if(flowerbed==null||flowerbed.length/2+1<n){
+        if (flowerbed == null || flowerbed.length / 2 + 1 < n) {
             return false;
         }
-        int count=0,k=0;
-        while(k<flowerbed.length){
-            if(flowerbed[k]==0){
-                if(k-1>=0&&flowerbed[k-1]==1){
+        int count = 0, k = 0;
+        while (k < flowerbed.length) {
+            if (flowerbed[k] == 0) {
+                if (k - 1 >= 0 && flowerbed[k - 1] == 1) {
                     k++;
                     continue;
                 }
-                if(k+1<flowerbed.length&&flowerbed[k+1]==1){
+                if (k + 1 < flowerbed.length && flowerbed[k + 1] == 1) {
                     k++;
                     continue;
                 }
                 count++;
-                if(count==n){
+                if (count == n) {
                     return true;
                 }
-                flowerbed[k]=1;
+                flowerbed[k] = 1;
                 k++;
             }
             k++;
@@ -580,41 +580,382 @@ public class Easy {
     }
 
 
-    public static void mergeTreeNode(TreeNode t1,TreeNode t2){
-        t1.val+=t2.val;
-        if(t1.left==null){
-            t1.left=t2.left;
+    public static void mergeTreeNode(TreeNode t1, TreeNode t2) {
+        t1.val += t2.val;
+        if (t1.left == null) {
+            t1.left = t2.left;
+        } else if (t1.left != null && t2.left != null) {
+            mergeTreeNode(t1.left, t2.left);
         }
-        else if(t1.left!=null&&t2.left!=null){
-            mergeTreeNode(t1.left,t2.left);
-        }
-        if(t1.right==null){
-            t1.right=t2.right;
-        }
-        else if(t1.right!=null&&t2.right!=null){
-            mergeTreeNode(t1.right,t2.right);
+        if (t1.right == null) {
+            t1.right = t2.right;
+        } else if (t1.right != null && t2.right != null) {
+            mergeTreeNode(t1.right, t2.right);
         }
     }
 
     public static TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
-        if(t1==null){
+        if (t1 == null) {
             return t2;
         }
-        if(t2==null){
+        if (t2 == null) {
             return t1;
         }
-        mergeTreeNode(t1,t2);
+        mergeTreeNode(t1, t2);
         return t1;
     }
 
+    public static int leastInterval(char[] tasks, int n) {
+        if (tasks == null || tasks.length == 0) {
+            return 0;
+        }
+        int[] count = new int[26];
+        for (char ch : tasks) {
+            count[ch - 'A']++;
+        }
+        Arrays.sort(count);
+        Queue<Integer> queue = new PriorityQueue<>(Collections.reverseOrder());
+        for (int i = count.length - 1; i >= 0; i--) {
+            if (count[i] > 0) {
+                queue.add(count[i]);
+            } else {
+                break;
+            }
+        }
+        int result = 0, k = 0, t = 0;
+        while (!queue.isEmpty()) {
+            while (!queue.isEmpty()) {
+                count[k] = queue.poll();
+                count[k]--;
+                k++;
+                if (k == n + 1) {
+                    break;
+                }
+            }
+            result += 1 + n;
+            t = k;
+            while (k > 0) {
+                if (count[k - 1] > 0) {
+                    queue.add(count[k - 1]);
+                }
+                k--;
+            }
+        }
+        if (t < 1 + n) {
+            result -= 1 + n - t;
+        }
+        return result;
+    }
+
+    public static TreeNode addOneRow(TreeNode root, int v, int d) {
+        if (d <= 0) {
+            return root;
+        }
+        if (d == 1) {
+            TreeNode node = new TreeNode(v);
+            node.left = root;
+            return node;
+        }
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        int dept = 2;
+        queue.add(root);
+        TreeNode temp, left, right;
+        int size;
+        while (dept < d && !queue.isEmpty()) {
+            size = queue.size();
+            while (size-- > 0) {
+                temp = queue.poll();
+                if (temp.left != null) {
+                    queue.add(temp.left);
+                }
+                if (temp.right != null) {
+                    queue.add(temp.right);
+                }
+            }
+            dept++;
+        }
+        while (!queue.isEmpty()) {
+            temp = queue.poll();
+            left = temp.left;
+            right = temp.right;
+            temp.left = new TreeNode(v);
+            temp.right = new TreeNode(v);
+            temp.left.left = left;
+            temp.right.right = right;
+        }
+        return root;
+    }
+
+    public static int maxDistance(List<List<Integer>> arrays) {
+        if (arrays == null || arrays.size() <= 1) {
+            return 0;
+        }
+        int min = arrays.get(0).get(0), max = arrays.get(0).get(arrays.get(0).size() - 1), result = 0, a, b;
+        List<Integer> array;
+        for (int i = 1; i < arrays.size(); i++) {
+            array = arrays.get(i);
+            if (array != null && array.size() != 0) {
+                a = array.get(0);
+                b = array.get(array.size() - 1);
+                if (max - a > result) {
+                    result = max - a;
+                }
+                if (b - min > result) {
+                    result = b - min;
+                }
+                if (b > max) {
+                    max = b;
+                }
+                if (a < min) {
+                    min = a;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static int smallestFactorization(int a) {
+        if (a <= 1) {
+            return a;
+        }
+        int[] count = new int[11];
+        while (a % 2 == 0) {
+            count[2]++;
+            a /= 2;
+        }
+        while (a % 3 == 0) {
+            count[3]++;
+            a /= 3;
+        }
+        while (a % 5 == 0) {
+            count[5]++;
+            a /= 5;
+        }
+        while (a % 7 == 0) {
+            count[7]++;
+            a /= 7;
+        }
+        if (a != 1) {
+            return 0;
+        }
+        count[9] = count[3] / 2;
+        count[3] = count[3] % 2;
+        count[8] = count[2] / 3;
+        count[2] = count[2] % 3;
+        if (count[3] > 0 && count[2] > 0) {
+            count[6] = 1;
+            count[3] = 0;
+            count[2]--;
+        }
+        if (count[2] == 2) {
+            count[4] = 1;
+            count[2] = 0;
+        }
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 11; i++) {
+            for (int j = 0; j < count[i]; j++) {
+                builder.append(i);
+            }
+        }
+        String result = builder.toString();
+        String max = String.valueOf(Integer.MAX_VALUE);
+        if (result.length() > max.length()) {
+            return 0;
+        }
+        if (result.length() == max.length()) {
+            for (int i = 0; i < max.length(); i++) {
+                if (result.charAt(i) > max.charAt(i)) {
+                    return 0;
+                } else if (result.charAt(i) < max.charAt(i)) {
+                    break;
+                }
+            }
+        }
+        return Integer.parseInt(result);
+    }
+
+    public static int maximumProduct(int[] nums) {
+        if (nums == null || nums.length < 3) {
+            return 0;
+        }
+        int a = Integer.MIN_VALUE, b = a, c = a, d = Integer.MAX_VALUE, e = d;
+        for (int n : nums) {
+            if (n > a) {
+                c = b;
+                b = a;
+                a = n;
+            } else if (n > b) {
+                c = b;
+                b = n;
+            } else if (n > c) {
+                c = n;
+            }
+            if (n < d) {
+                e = d;
+                d = n;
+            } else if (n < e) {
+                e = n;
+            }
+        }
+        return Math.max(a * b * c, d * e * a);
+    }
+
+    public static int findDerangement(int n) {
+        if (n == 1) {
+            return 0;
+        }
+        if (n == 2) {
+            return 1;
+        }
+        int a = 1, b = 0, c, d;
+        for (int i = 2; i <= n; i++) {
+            System.out.println(i - 1 + " " + (a + b));
+            c = 0;
+            for (int j = 0; j < i - 1; j++) {
+                c = (c + a + b) % 1000000007;
+            }
+//            c=(i-1)*(a+b)%1000000007;
+            a = b;
+            b = c;
+        }
+        return b;
+    }
+
+    public static int[] smallestRange(List<List<Integer>> nums) {
+        if (nums == null || nums.size() == 0) {
+            return null;
+        }
+        int[] result = new int[]{-100000, 100000};
+        int[][] index = new int[nums.size()][3];
+        Queue<int[]> queue = new PriorityQueue<>(new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[2] - o2[2];
+            }
+        });
+        int min, max = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.size(); i++) {
+            index[i][0] = i;
+            index[i][1] = 0;
+            index[i][2] = nums.get(i).get(0);
+            queue.add(index[i]);
+            if (index[i][2] > max) {
+                max = index[i][2];
+            }
+        }
+        int[] num;
+        while (true) {
+            num = queue.poll();
+            min = num[2];
+            if (max - min < result[1] - result[0]) {
+                result[0] = min;
+                result[1] = max;
+            }
+            num[1]++;
+            if (num[1] == nums.get(num[0]).size()) {
+                break;
+            }
+            num[2] = nums.get(num[0]).get(num[1]);
+            if (max < num[2]) {
+                max = num[2];
+            }
+            queue.add(num);
+        }
+        return result;
+    }
+
+    public List<Double> averageOfLevels(TreeNode root) {
+        List<Double> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        TreeNode node;
+        double sum;
+        int count, k;
+        while (!queue.isEmpty()) {
+            sum = 0;
+            count = queue.size();
+            k = count;
+            while (k-- > 0) {
+                node = queue.poll();
+                sum += node.val;
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            result.add(sum / count);
+        }
+        return result;
+    }
+
+    public static void shopping(int m, int n, List<Integer> price, List<List<Integer>> special, List<Integer> needs, int[] array) {
+        if (n == price.size()) {
+            if (array[array.length - 1] > array[array.length - 2]) {
+                array[array.length - 1] = array[array.length - 2];
+            }
+        } else if (m == special.size() + 1) {
+            if (array[n] == needs.get(n)) {
+                shopping(0, n + 1, price, special, needs, array);
+            }
+        } else if (m == 0) {
+            for (int i = 0; i <= needs.get(n) - array[n]; i++) {
+                array[n] += i;
+                array[array.length - 2] += i * price.get(n);
+                shopping(1, n, price, special, needs, array);
+                array[n] -= i;
+                array[array.length - 2] -= i * price.get(n);
+            }
+        } else {
+            int k, t = needs.get(n) - array[n], j;
+            if ((k = special.get(m - 1).get(n)) > 0) {
+                for (int i = 1; i * k <= t; i++) {
+                    for (j = 0; j < price.size(); j++) {
+                        if (i * special.get(m - 1).get(j) + array[j] > needs.get(j)) {
+                            break;
+                        }
+                    }
+                    if (j == price.size()) {
+                        for (int x = n; x < price.size(); x++) {
+                            array[x] += i * special.get(m - 1).get(x);
+                        }
+                        array[array.length - 2] += i * special.get(m - 1).get(price.size());
+                        shopping(m + 1, n, price, special, needs, array);
+                        for (int x = n; x < price.size(); x++) {
+                            array[x] -= i * special.get(m - 1).get(x);
+                        }
+                        array[array.length - 2] -= i * special.get(m - 1).get(price.size());
+                    } else {
+                        break;
+                    }
+                }
+            }
+            shopping(m + 1, n, price, special, needs, array);
+        }
+    }
+
+    public static int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
+        if (needs == null || needs.size() == 0) {
+            return 0;
+        }
+        int[] array = new int[needs.size() + 2];
+        array[array.length - 1] = Integer.MAX_VALUE;
+        shopping(0, 0, price, special, needs, array);
+        return array[array.length - 1];
+    }
+
     public static void main(String[] args) {
+//        System.out.println("hello,world!");
 //        System.out.println(checkRecord("LALL"));
 //        System.out.println(optimalDivision(new int[]{100,10,1000,10}));
 //        System.out.println(leastBricks(new ArrayList<List<Integer>>() {{
 //            add(Arrays.asList(1,2,2,1));
 //            add(Arrays.asList(3, 1, 2));
 //            add(Arrays.asList(1, 3, 2));
-//            add(Arrays.asList(2, 4));
 //            add(Arrays.asList(3, 1, 2));
 //            add(Arrays.asList(1, 3, 1, 1));
 //        }}));
@@ -629,18 +970,63 @@ public class Easy {
 //        System.out.println(Arrays.toString(findRestaurant(new String[]{"Shogun", "Tapioca Express", "Burger King", "KFC"}, new String[]{"Tapioca Express", "Shogun", "Burger King"})));
 //        System.out.println(findMaxDivisor(8,12));
 //        System.out.println(fractionAddition("-5/2+10/3+7/9"));
-//        TreeNode one = new TreeNode(1);
+//        TreeNode one = new TreeNode(4);
 //        TreeNode two = new TreeNode(2);
 //        TreeNode three = new TreeNode(3);
-//        TreeNode four = new TreeNode(4);
+//        TreeNode four = new TreeNode(1);
 //        one.left = two;
-//        one.right = three;
+//        two.left = three;
 //        two.right = four;
 //        System.out.println(tree2str(one));
 //        System.out.println(findDuplicate(new String[]{"root/a 1.txt(abcd) 2.txt(efsfgh) 3.txt(efsfgh)","root/c 3.txt(abdfcd)","root/c/d 4.txt(efggdfh)"}));
-        System.out.println(canPlaceFlowers(new int[]{1,0,0,0,0,0,0,0,1},3));
+//        System.out.println(canPlaceFlowers(new int[]{1, 0, 0, 0, 0, 0, 0, 0, 1}, 3));
+//        System.out.println(leastInterval(new char[]{
+//                'A', 'A', 'A', 'B', 'B', 'C'}, 2));
+//        addOneRow(one, 1, 3);
+//        List<List<Integer>> result = new ArrayList<>();
+//        result.add(Arrays.asList(4, 10, 15, 24, 26));
+//        result.add(Arrays.asList(1, 9, 12, 20));
+//        result.add(Arrays.asList(5, 18, 22, 30));
+//        System.out.println(maxDistance(result));
+//        System.out.println(smallestFactorization(77));
+//        System.out.println(maximumProduct(new int[]{1,2,3}));
+//        System.out.println(findDerangement(14));
+//        System.out.println(Arrays.toString(smallestRange(result)));
+        List<Integer> price = new ArrayList<>();
+        price.add(4);
+        price.add(3);
+        price.add(2);
+        price.add(9);
+        price.add(8);
+        price.add(8);
+        List<List<Integer>> special = new ArrayList<>();
+        List<Integer> a = new ArrayList<>();
+        a.add(1);
+        a.add(5);
+        a.add(5);
+        a.add(1);
+        a.add(4);
+        a.add(0);
+        a.add(18);
+        List<Integer> b = new ArrayList<>();
+        b.add(3);
+        b.add(3);
+        b.add(6);
+        b.add(6);
+        b.add(4);
+        b.add(2);
+        b.add(32);
+        special.add(a);
+        special.add(b);
+        List<Integer> needs = new ArrayList<>();
+        needs.add(6);
+        needs.add(5);
+        needs.add(5);
+        needs.add(6);
+        needs.add(4);
+        needs.add(1);
+        System.out.println(shoppingOffers(price, special, needs));
     }
-
 
     private static class TreeNode {
         int val;
