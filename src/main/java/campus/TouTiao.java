@@ -1,4 +1,4 @@
-package start;
+package campus;
 
 import java.util.*;
 
