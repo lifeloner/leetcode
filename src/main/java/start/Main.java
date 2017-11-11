@@ -1,5 +1,7 @@
 package start;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -8,6 +10,66 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
+        Scanner scanner=new Scanner(System.in);
+        int m,n;
+        String line=scanner.nextLine();
+        String[]data=line.split(" ");
+        m=Integer.parseInt(data[0]);
+        n=Integer.parseInt(data[1]);
+        List<List<Integer>>list=new ArrayList<>();
+        boolean[]flag=new boolean[m+1];
+        for(int i=0;i<m;i++){
+            line=scanner.nextLine();
+            data=line.split(" ");
+            List<Integer>temp=new ArrayList<>(data.length);
+            for(int j=0;j<data.length;j++){
+                temp.add(Integer.parseInt(data[j]));
+            }
+            list.add(temp);
+        }
+        List<Integer>result=new ArrayList<>();
+        result.add(n);
+        flag[n]=true;
+        m=dfs(n,result,list,flag);
+        if(m==0){
+            System.out.println("R");
+        }
+        else if(m==-1){
+            for(int i=result.size()-1;i>0;i--){
+                System.out.print(result.get(i)+" ");
+            }
+            System.out.println(result.get(0));
+        }
+        else {
+            System.out.println("E");
+        }
+    }
+
+    public static int dfs(int n, List<Integer>result, List<List<Integer>>list,boolean[]flag){
+        int m,t;
+        for(int i=0;i<list.get(n-1).size();i++){
+            m=list.get(n-1).get(i);
+            if(m==-1){
+                return -1;
+            }
+            if(m==0){
+                return 0;
+            }
+            result.add(m);
+            if(flag[m]){
+                return 1;
+            }
+            flag[m]=true;
+            t=dfs(m,result,list,flag);
+            if(t!=0){
+                return t;
+            }
+            flag[m]=false;
+        }
+        return 0;
+    }
+
+    public static void mainss(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String str=scanner.nextLine();
         int n = Integer.parseInt(str);
