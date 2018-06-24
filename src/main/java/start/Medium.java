@@ -409,6 +409,32 @@ public class Medium {
         return result;
     }
 
+    public static int minSwap(int[] A, int[] B) {
+        if(A.length==1){
+            return 0;
+        }
+        int [][]num=new int[A.length][2];
+        num[0][1]=1;
+        for(int i=1;i<A.length;i++){
+            num[i][0]=-1;
+            if(num[i-1][0]>=0&&A[i]>A[i-1]&&B[i]>B[i-1]){
+                num[i][0]=num[i-1][0];
+            }
+            if(num[i-1][1]>=0&&A[i]>B[i-1]&&B[i]>A[i-1]&&(num[i][0]==-1||num[i-1][1]<num[i][0])){
+                num[i][0]=num[i-1][1];
+            }
+            num[i][1]=-1;
+            if(num[i-1][0]>=0&&A[i]>B[i-1]&&B[i]>A[i-1]){
+                num[i][1]=num[i-1][0]+1;
+            }
+            if(num[i-1][1]>=0&&A[i]>A[i-1]&&B[i]>B[i-1]&&(num[i][1]==-1||num[i-1][1]+1<num[i][1])){
+                num[i][1]=num[i-1][1]+1;
+            }
+        }
+        System.out.println(Arrays.deepToString(num));
+        return Math.min(num[A.length-1][1],num[A.length-1][0]);
+    }
+
     public static void main(String[] args) {
 //        System.out.println(findCircleNums(new int[][]{{1,1,0},{1,1,1},{0,1,1}}));
 //        System.out.println(findMinDifference(new ArrayList<String>(){{add("00:01");
@@ -421,12 +447,13 @@ public class Medium {
 //        System.out.println(arrayNesting(new int[]{5,4,0,3,1,6,2}));
 //        System.out.println(scheduleCourse(new int[][]{{5,5},{4,6},{2,6}}));
 //        System.out.println(judgeSquareSum(2038480973));
-        List<String>logs=new ArrayList<>();
-        logs.add("0:start:0");
-        logs.add("0:start:2");
-        logs.add("0:end:5");
-        logs.add("0:end:10");
-        System.out.println(Arrays.toString(exclusiveTime(1,logs)));
+//        List<String>logs=new ArrayList<>();
+//        logs.add("0:start:0");
+//        logs.add("0:start:2");
+//        logs.add("0:end:5");
+//        logs.add("0:end:10");
+//        System.out.println(Arrays.toString(exclusiveTime(1,logs)));
+        System.out.println(minSwap(new int[]{1,2,3,4,5},new int[]{1,2,3,7,8}));
     }
 
     public class TreeNode {

@@ -1286,6 +1286,19 @@ public class Easy {
         return -1;
     }
 
+    public boolean escapeGhosts(int[][] ghosts, int[] target) {
+        if(ghosts==null||ghosts.length<1){
+            return true;
+        }
+        int distance=Math.abs(target[0])+Math.abs(target[1]);
+        for(int i=0;i<ghosts.length;i++){
+            if(Math.abs(ghosts[i][0]-target[0])+Math.abs(ghosts[i][1]-target[1])<=distance){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         Easy easy = new Easy();
 //        System.out.println(easy.fi
@@ -1345,7 +1358,9 @@ public class Easy {
 //        System.out.println(easy.diameterOfBinaryTree(a));
 //        System.out.println(easy.reverseStr("abcdefghg", 3));
 //        System.out.println(easy.checkPerfectNumber(4));
-        System.out.println(easy.findLUSlength(new String[]{"abc","abc","bc","d","d","ac"}));
+//        System.out.println(easy.findLUSlength(new String[]{"abc","abc","bc","d","d","ac"}));
+        int [][]array={{2,0}};
+        System.out.println(easy.escapeGhosts(array,new int[]{1,0}));
     }
 
 }
