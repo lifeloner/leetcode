@@ -363,8 +363,149 @@ public class Solution {
         return total;
     }
 
+    // 优先队列
+    public static int smallestDistancePair(int[] nums, int k) {
+        if (nums == null || nums.length <= 1) {
+            return 0;
+        }
+        Arrays.sort(nums);
+        Queue<int[]> queue = new PriorityQueue<>(new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                if (o1[0] == o2[0]) {
+                    return o1[1] - o2[1];
+                }
+                return o1[0] - o2[0];
+            }
+        });
+        int[] distance = new int[nums.length - 1];
+        for (int i = 1; i < nums.length; i++) {
+            int[] distances = new int[2];
+            distances[0] = nums[i] - nums[i - 1];
+            distance[i - 1] = distances[0];
+            distances[1] = i - 1;
+            queue.add(distances);
+        }
+        int count = 0;
+        int[] distances;
+        while (!queue.isEmpty()) {
+            distances = queue.poll();
+            if (++count == k) {
+                return distances[0];
+            }
+            if (distances[1] + 1 < distance.length) {
+                queue.add(new int[] {distances[0] + distance[distances[1] + 1], distances[1] + 1});
+            }
+        }
+        return -1;
+    }
+
+    public static int[] asteroidCollision(int[] asteroids) {
+        if (asteroids == null || asteroids.length == 0) {
+            return new int[0];
+        }
+        List<Integer> list = new ArrayList<>();
+        int len = 0;
+        boolean flag;
+        for (int i = 0; i < asteroids.length; i++) {
+            if (list.size() == 0 || asteroids[i] > 0) {
+                list.add(asteroids[i]);
+                len++;
+            } else {
+                flag = true;
+                while (len > 0 && list.get(len - 1) > 0) {
+                    if (-asteroids[i] == list.get(len - 1)) {
+                        list.remove(len - 1);
+                        len--;
+                        flag = false;
+                        break;
+                    } else if (-asteroids[i] > list.get(len - 1)) {
+                        list.remove(len - 1);
+                        len--;
+                    } else {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    list.add(asteroids[i]);
+                    len++;
+                }
+            }
+        }
+        int[] result = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+        return result;
+    }
+
+    public static int reachNumber(int target) {
+        if (target == 0) {
+            return 0;
+        }
+        if (target < 0) {
+            target = -target;
+        }
+        int step = 0, sum = 0;
+        while (sum < target) {
+            step++;
+            sum += step;
+        }
+        while ((sum - target) % 2 != 0) {
+            step++;
+            sum += step;
+        }
+        return step;
+    }
+
+    // 单源最短路径
+    public int networkDelayTime(int[][] times, int N, int K) {
+        int[][] distances = new int[N][N];
+        boolean[][] flag = new boolean[N][N];
+        int max = 0, minNeighbor = K, distance = Integer.MAX_VALUE, index;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                distances[i][j] = -1;
+            }
+        }
+        for (int i = 0; i < times.length; i++) {
+            distances[times[i][0] - 1][times[i][1] - 1] = times[i][2];
+            if (times[i][0] == K && times[i][2] < distance) {
+                distance = times[i][2];
+                minNeighbor = times[i][1];
+            }
+        }
+        flag[K - 1][K - 1] = true;
+        while (minNeighbor != K) {
+            index = K;
+            distance = Integer.MAX_VALUE;
+            flag[K - 1][minNeighbor - 1] = true;
+            for (int i = 0; i < N; i++) {
+                if (!flag[K - 1][i] && distances[minNeighbor - 1][i] >= 0 && (distances[K - 1][i] == -1
+                        || distances[K - 1][i] > distances[K - 1][minNeighbor - 1] + distances[minNeighbor - 1][i])) {
+                    distances[K - 1][i] = distances[K - 1][minNeighbor - 1] + distances[minNeighbor - 1][i];
+                }
+                if (!flag[K - 1][i] && distances[K - 1][i] >= 0 && distances[K - 1][i] < distance) {
+                    distance = distances[K - 1][i];
+                    index = i + 1;
+                }
+            }
+            minNeighbor = index;
+        }
+        for (int i = 0; i < N; i++) {
+            if (!flag[K - 1][i]) {
+                return -1;
+            }
+            if (distances[K - 1][i] > max) {
+                max = distances[K - 1][i];
+            }
+        }
+        return max;
+    }
+
     public static void main(String[] args) {
-        System.out.println(numSubarrayProductLessThanK(new int[] {10, 9, 10, 4, 3, 8, 3, 3, 6, 2, 10, 10, 9, 3}, 19));
+        System.out.println(reachNumber(2));
     }
 
     public class TreeNode {
