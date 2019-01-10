@@ -504,8 +504,119 @@ public class Solution {
         return max;
     }
 
+    // 区间
+    public static int intersectionSizeTwo(int[][] intervals) {
+        if (intervals == null || intervals.length == 0) {
+            return 0;
+        }
+
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                if (o1[1] == o2[1]) {
+                    return o1[0] - o2[0];
+                }
+                return o1[1] - o2[1];
+            }
+        });
+        int count = 2, max = intervals[0][intervals[0].length - 1], min = max - 1;
+        int[] interval;
+        for (int i = 1; i < intervals.length; i++) {
+            interval = intervals[i];
+            if (interval[0] <= min) {
+                continue;
+            } else if (interval[0] > max) {
+                max = interval[interval.length - 1];
+                min = max - 1;
+                count += 2;
+            } else {
+                min = max;
+                max = interval[interval.length - 1];
+                if (min == max) {
+                    min = max - 1;
+                }
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //  two point
+    public static int maxChunksToSorted(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        if (arr.length == 1) {
+            return 1;
+        }
+        int[] maxs = new int[arr.length];
+        int[] mins = new int[arr.length];
+        int count = 1, max = arr[0], min = arr[arr.length - 1];
+        for (int i = 0; i < arr.length; i++) {
+            if (max < arr[i]) {
+                max = arr[i];
+            }
+            maxs[i] = max;
+        }
+        for (int i = arr.length - 1; i >= 0; i--) {
+            if (arr[i] < min) {
+                min = arr[i];
+            }
+            mins[i] = min;
+        }
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (maxs[i] <= mins[i + 1]) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // 简单DP
+    public static int orderOfLargestPlusSign(int N, int[][] mines) {
+        if (N <= 0) {
+            return 0;
+        }
+        int[][] count = new int[N][N];
+        int max = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                count[i][j] = Math.min(i + 1, N - i);
+                count[i][j] = Math.min(count[i][j], j + 1);
+                count[i][j] = Math.min(count[i][j], N - j);
+            }
+        }
+        if (mines != null && mines.length > 0) {
+            for (int i = 0; i < mines.length; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (count[mines[i][0]][j] > Math.abs(mines[i][1] - j)) {
+                        count[mines[i][0]][j] = Math.abs(mines[i][1] - j);
+                    }
+                }
+                for (int j = 0; j < N; j++) {
+                    if (count[j][mines[i][1]] > Math.abs(mines[i][0] - j)) {
+                        count[j][mines[i][1]] = Math.abs(mines[i][0] - j);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (count[i][j] > max) {
+                    max = count[i][j];
+                }
+            }
+        }
+        return max;
+    }
+
     public static void main(String[] args) {
-        System.out.println(reachNumber(2));
+        int[][] arrays = new int[][]
+                {{16, 18}, {11, 18}, {15, 23}, {1, 16}, {10, 16}, {6, 19}, {18, 20}, {7, 19}, {10, 11}, {11, 23}, {6, 7}, {23, 25},
+                        {1, 3},
+                        {7, 12}, {1, 13}, {23, 25}, {10, 22}, {23, 25}, {0, 19}, {0, 13}, {7, 12}, {14, 19}, {8, 17}, {7, 23}, {4, 24}};
+        System.out.println(intersectionSizeTwo(arrays));
+
     }
 
     public class TreeNode {
