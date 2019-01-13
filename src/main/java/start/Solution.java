@@ -198,7 +198,7 @@ public class Solution {
         int m = forest.size(), n = forest.get(0).size();
         boolean[][] flag = new boolean[m][n];
         Queue<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[] {startPointX, startPointY});
+        queue.add(new int[]{startPointX, startPointY});
         int size = queue.size(), x, y;
         int[] pos;
         int step = 0;
@@ -213,28 +213,28 @@ public class Solution {
                     if (x - 1 == stopPointX && y == stopPointY) {
                         return step;
                     }
-                    queue.add(new int[] {x - 1, y});
+                    queue.add(new int[]{x - 1, y});
                     flag[x - 1][y] = true;
                 }
                 if (x + 1 < m && !flag[x + 1][y] && forest.get(x + 1).get(y) >= 1) {
                     if (x + 1 == stopPointX && y == stopPointY) {
                         return step;
                     }
-                    queue.add(new int[] {x + 1, y});
+                    queue.add(new int[]{x + 1, y});
                     flag[x + 1][y] = true;
                 }
                 if (y - 1 >= 0 && !flag[x][y - 1] && forest.get(x).get(y - 1) >= 1) {
                     if (x == stopPointX && y - 1 == stopPointY) {
                         return step;
                     }
-                    queue.add(new int[] {x, y - 1});
+                    queue.add(new int[]{x, y - 1});
                     flag[x][y - 1] = true;
                 }
                 if (y + 1 < n && !flag[x][y + 1] && forest.get(x).get(y + 1) >= 1) {
                     if (x == stopPointX && y + 1 == stopPointY) {
                         return step;
                     }
-                    queue.add(new int[] {x, y + 1});
+                    queue.add(new int[]{x, y + 1});
                     flag[x][y + 1] = true;
                 }
                 size -= 1;
@@ -394,7 +394,7 @@ public class Solution {
                 return distances[0];
             }
             if (distances[1] + 1 < distance.length) {
-                queue.add(new int[] {distances[0] + distance[distances[1] + 1], distances[1] + 1});
+                queue.add(new int[]{distances[0] + distance[distances[1] + 1], distances[1] + 1});
             }
         }
         return -1;
@@ -655,16 +655,69 @@ public class Solution {
         return m;
     }
 
-    public static void main(String[] args) {
-        System.out.println(kthGrammar(4,5));
+    // 简单DP
+    public static int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+        if (difficulty == null || difficulty.length == 0 || worker == null || worker.length == 0) {
+            return 0;
+        }
+        int[][] nums = new int[difficulty.length][3];
+        for (int i = 0; i < difficulty.length; i++) {
+            nums[i][0] = difficulty[i];
+            nums[i][1] = profit[i];
+        }
+        Arrays.sort(nums, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                if (o1[0] == o2[0]) {
+                    return o1[1] - o2[1];
+                }
+                return o1[0] - o2[0];
+            }
+        });
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            max = Math.max(max, nums[i][1]);
+            nums[i][2] = max;
+        }
+        Arrays.sort(worker);
+        int index = 0;
+        max = 0;
+        for (int i : worker) {
+            while (index < nums.length && nums[index][0] <= i) {
+                index++;
+            }
+            if (index == nums.length || (nums[index][0] > i && index > 0)) {
+                index--;
+            }
+            if (nums[index][0] <= i) {
+                max += nums[index][2];
+            }
+        }
+        return max;
+    }
 
+    // 无意义
+    public static int peakIndexInMountainArray(int[] A) {
+        for (int i = 1; i < A.length; i++) {
+            if (A[i] > A[i - 1]) {
+                continue;
+            }
+            return i - 1;
+        }
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(maxProfitAssignment(new int[]{68, 35, 52, 47, 86}, new int[]{67, 17, 1, 81, 3}, new int[]{92, 10, 85, 84, 82}));
     }
 
     public class TreeNode {
-        int      val;
+        int val;
         TreeNode left;
         TreeNode right;
 
-        TreeNode(int x) { val = x; }
+        TreeNode(int x) {
+            val = x;
+        }
     }
 }
