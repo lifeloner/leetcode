@@ -198,7 +198,7 @@ public class Solution {
         int m = forest.size(), n = forest.get(0).size();
         boolean[][] flag = new boolean[m][n];
         Queue<int[]> queue = new ArrayDeque<>();
-        queue.add(new int[]{startPointX, startPointY});
+        queue.add(new int[] {startPointX, startPointY});
         int size = queue.size(), x, y;
         int[] pos;
         int step = 0;
@@ -213,28 +213,28 @@ public class Solution {
                     if (x - 1 == stopPointX && y == stopPointY) {
                         return step;
                     }
-                    queue.add(new int[]{x - 1, y});
+                    queue.add(new int[] {x - 1, y});
                     flag[x - 1][y] = true;
                 }
                 if (x + 1 < m && !flag[x + 1][y] && forest.get(x + 1).get(y) >= 1) {
                     if (x + 1 == stopPointX && y == stopPointY) {
                         return step;
                     }
-                    queue.add(new int[]{x + 1, y});
+                    queue.add(new int[] {x + 1, y});
                     flag[x + 1][y] = true;
                 }
                 if (y - 1 >= 0 && !flag[x][y - 1] && forest.get(x).get(y - 1) >= 1) {
                     if (x == stopPointX && y - 1 == stopPointY) {
                         return step;
                     }
-                    queue.add(new int[]{x, y - 1});
+                    queue.add(new int[] {x, y - 1});
                     flag[x][y - 1] = true;
                 }
                 if (y + 1 < n && !flag[x][y + 1] && forest.get(x).get(y + 1) >= 1) {
                     if (x == stopPointX && y + 1 == stopPointY) {
                         return step;
                     }
-                    queue.add(new int[]{x, y + 1});
+                    queue.add(new int[] {x, y + 1});
                     flag[x][y + 1] = true;
                 }
                 size -= 1;
@@ -394,7 +394,7 @@ public class Solution {
                 return distances[0];
             }
             if (distances[1] + 1 < distance.length) {
-                queue.add(new int[]{distances[0] + distance[distances[1] + 1], distances[1] + 1});
+                queue.add(new int[] {distances[0] + distance[distances[1] + 1], distances[1] + 1});
             }
         }
         return -1;
@@ -707,12 +707,234 @@ public class Solution {
         return 0;
     }
 
+    public static int numMatchingSubseq(String S, String[] words) {
+        if (S == null || words == null || words.length == 0) {
+            return 0;
+        }
+        List<List<Integer>> index = new ArrayList<>(26);
+        for (int i = 0; i < 26; i++) {
+            index.add(new ArrayList<>());
+        }
+        for (int i = 0; i < S.length(); i++) {
+            index.get(S.charAt(i) - 'a').add(i);
+        }
+        int count = 0, current;
+        for (String word : words) {
+            current = -1;
+            for (int i = 0; i < word.length(); i++) {
+                if ((current = index(current, index.get(word.charAt(i) - 'a'))) == -1) {
+                    break;
+                }
+            }
+            if (current >= 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static int index(int index, List<Integer> indexs) {
+        for (int i = 0; i < indexs.size(); i++) {
+            if (indexs.get(i) > index) {
+                return indexs.get(i);
+            }
+        }
+        return -1;
+    }
+
+    public static boolean pyramidTransition(String bottom, List<String> allowed) {
+        Map<String, Set<Character>> map = new HashMap<>();
+        String prefix;
+        for (String str : allowed) {
+            prefix = str.substring(0, 2);
+            Set<Character> end = map.get(prefix);
+            if (end == null) {
+                end = new HashSet<>();
+            }
+            end.add(str.charAt(2));
+            map.put(prefix, end);
+        }
+        if (map.size() == 0) {
+            return false;
+        }
+        return pyramidTransition(bottom, 1, map, new StringBuilder());
+
+    }
+
+    public static boolean pyramidTransition(String bottom, int index, Map<String, Set<Character>> map, StringBuilder builder) {
+        if (bottom.length() == 1) {
+            return true;
+        }
+        if (index == bottom.length()) {
+            return pyramidTransition(builder.toString(), 1, map, new StringBuilder());
+        }
+        String prefix = "" + bottom.charAt(index - 1) + bottom.charAt(index);
+        Set<Character> end = map.get(prefix);
+        if (end == null || end.size() == 0) {
+            return false;
+        }
+        if (builder.length() < index) {
+            builder.append(" ");
+        }
+        for (Character c : end) {
+            builder.setCharAt(index - 1, c);
+            if (pyramidTransition(bottom, index + 1, map, builder)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static int slidingPuzzle(int[][] board) {
+        Queue<String> queue = new ArrayDeque<>();
+        Set<String> set = new HashSet<>();
+        int[][] move = {{1, 3}, {0, 2, 4}, {1, 5}, {0, 4}, {1, 3, 5}, {2, 4}};
+        StringBuilder builder = new StringBuilder();
+        int pos = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                builder.append(board[i][j]);
+                if (board[i][j] == 0) {
+                    pos = i * 3 + j;
+                }
+            }
+        }
+        builder.append(pos);
+        set.add(builder.toString());
+        queue.add(builder.toString());
+        int size, step = 0;
+        String str;
+        while (!queue.isEmpty()) {
+            size = queue.size();
+            while (size != 0) {
+                str = queue.poll();
+                if (str.substring(0, 6).equals("123450")) {
+                    return step;
+                }
+                pos = str.charAt(6) - '0';
+                int[] moves = move[pos];
+                for (int i : moves) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(str);
+                    stringBuilder.setCharAt(pos, str.charAt(i));
+                    stringBuilder.setCharAt(i, '0');
+                    stringBuilder.setCharAt(6, (char) ('0' + i));
+                    if (!set.contains(stringBuilder.toString())) {
+                        set.add(stringBuilder.toString());
+                        queue.add(stringBuilder.toString());
+                    }
+                }
+                size--;
+            }
+            step++;
+        }
+        return -1;
+    }
+
+    public static List<Integer> partitionLabels(String S) {
+        List<Integer> list = new ArrayList<>();
+        if (S == null || S.length() == 0) {
+            return list;
+        }
+        int[] index = new int[26];
+        for (int i = 0; i < 26; i++) {
+            index[i] = -1;
+        }
+        for (int i = 0; i < S.length(); i++) {
+            index[S.charAt(i) - 'a'] = i;
+        }
+        int begin = 0, end = index[S.charAt(0) - 'a'];
+        for (int i = 0; i < S.length(); i++) {
+            if (i <= end && index[S.charAt(i) - 'a'] > end) {
+                end = index[S.charAt(i) - 'a'];
+            } else if (i > end) {
+                list.add(end - begin + 1);
+                begin = i;
+                end = index[S.charAt(i) - 'a'];
+            }
+        }
+        list.add(end - begin + 1);
+        return list;
+    }
+
+    public static int minSwapsCouples(int[] row) {
+        if (row == null || row.length == 0 || row.length % 2 != 0) {
+            return 0;
+        }
+        int[] index = new int[row.length];
+        for (int i = 0; i < row.length; i++) {
+            index[row[i]] = i;
+        }
+        int swap = 0, temp;
+        for (int i = 0; i < row.length; i += 2) {
+            if (row[i] / 2 == row[i + 1] / 2) {
+                continue;
+            }
+            if (row[i] % 2 == 0) {
+                temp = row[i + 1];
+                row[i + 1] = row[i] + 1;
+                row[index[row[i] + 1]] = temp;
+                index[temp] = index[row[i] + 1];
+            } else {
+                temp = row[i + 1];
+                row[i + 1] = row[i] - 1;
+                row[index[row[i] - 1]] = temp;
+                index[temp] = index[row[i] - 1];
+            }
+            swap++;
+        }
+        return swap;
+    }
+
+    public static String reorganizeString(String S) {
+        if (S == null || S.length() <= 1) {
+            return S;
+        }
+        int[] count = new int[26];
+        int max = 0, maxIndex = 0;
+        for (int i = 0; i < S.length(); i++) {
+            count[S.charAt(i) - 'a']++;
+            if (count[S.charAt(i) - 'a'] > max) {
+                max = count[S.charAt(i) - 'a'];
+                maxIndex = S.charAt(i) - 'a';
+            }
+        }
+        if (max - 1 > S.length() - max) {
+            return "";
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < S.length(); i++) {
+            stringBuilder.append("a");
+        }
+        int index = 0;
+        for (int i = 0; i < count[maxIndex]; i++) {
+            stringBuilder.setCharAt(index, (char) ('a' + maxIndex));
+            index += 2;
+        }
+        if (index >= S.length()) {
+            index = 1;
+        }
+        for (int i = 0; i < 26; i++) {
+            if (i == maxIndex) {
+                continue;
+            }
+            for (int j = 0; j < count[i]; j++) {
+                stringBuilder.setCharAt(index, (char) ('a' + i));
+                index += 2;
+                if (index >= S.length()) {
+                    index = 1;
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     public static void main(String[] args) {
-        System.out.println(maxProfitAssignment(new int[]{68, 35, 52, 47, 86}, new int[]{67, 17, 1, 81, 3}, new int[]{92, 10, 85, 84, 82}));
+        System.out.println(reorganizeString("vvvlo"));
     }
 
     public class TreeNode {
-        int val;
+        int      val;
         TreeNode left;
         TreeNode right;
 
