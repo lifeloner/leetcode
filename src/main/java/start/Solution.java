@@ -929,6 +929,54 @@ public class Solution {
         return stringBuilder.toString();
     }
 
+    // 无意义
+    public static List<List<Integer>> largeGroupPositions(String S) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (S == null || S.length() == 0) {
+            return result;
+        }
+        int begin = 0, end = 0;
+        for (int i = 1; i < S.length(); i++) {
+            if (S.charAt(i) == S.charAt(i - 1)) {
+                end = i;
+            } else {
+                if (end - begin >= 2) {
+                    List<Integer> temp = new ArrayList<>();
+                    temp.add(begin);
+                    temp.add(end);
+                    result.add(temp);
+                }
+                begin = i;
+                end = i;
+            }
+        }
+        if (end - begin >= 2) {
+            List<Integer> temp = new ArrayList<>();
+            temp.add(begin);
+            temp.add(end);
+            result.add(temp);
+        }
+        return result;
+    }
+
+    // 无意义，凑个数
+    public static int[][] flipAndInvertImage(int[][] A) {
+        if (A == null || A.length == 0) {
+            return A;
+        }
+        int num;
+        for (int[] array : A) {
+            for (int i = 0, j = array.length - 1; i <= j; i++, j--) {
+                num = array[i];
+                array[i] = 1 ^ array[j];
+                if (i != j) {
+                    array[j] = 1 ^ num;
+                }
+            }
+        }
+        return A;
+    }
+
     public static void main(String[] args) {
         System.out.println(reorganizeString("vvvlo"));
     }
